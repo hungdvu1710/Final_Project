@@ -1,0 +1,20 @@
+{
+  "name": "Final_Project",
+  "version": "1.0.0",
+  "description": "Contents:   - Login page   - Admin     - Quizzes list with action ICONed buttons     - Create quizzes using popup window like dis: https://miro.medium.com/max/1400/1*mv-mAe1RuqgdfzuE-fGH2g.gif     - Edit quizzes with popup window     - Disable quizzes with     - View results   - User     - Countdown...!     - Take quizzes     - Submit     - View results",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.2"
+  },
+  "dependencies": {
+    "electron-fetch": "^1.4.0",
+    "path": "^0.12.7"
+  }
+}
