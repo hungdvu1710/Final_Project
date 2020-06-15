@@ -1,4 +1,7 @@
-const { ipcRenderer } = require("electron")
+const { 
+  ipcRenderer,
+  remote,
+  ipcMain} = require("electron")
 
 const logInBtn = document.querySelector("#logIn")
 const signUpBtn = document.querySelector("#signUp")
@@ -61,3 +64,7 @@ function validateInput(input){
   }
   return true
 }
+
+ipcRenderer.on('close-login-page', (event,args)=>{
+  remote.getCurrentWindow().close()
+})

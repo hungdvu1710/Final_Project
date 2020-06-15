@@ -13,9 +13,8 @@ const dataStore = require('nedb')
 const credentialDb = new dataStore({filename: path.join(__dirname, 'credentials.db')})
 credentialDb.loadDatabase()
 
-let loginWindow;
 function createLogInWindow () {
-  loginWindow = new BrowserWindow({
+  let loginWindow = new BrowserWindow({
     width: 500,
     height: 400,
     webPreferences: {
@@ -36,7 +35,7 @@ function openExcerciseSelectorWindow(){
     }
   })
 
-  excerciseSelectWin.loadFile('.\\excercise_selector\\index.html');
+  excerciseSelectWin.loadFile('.\\excercise_selector\\index.html')
   excerciseSelectWin.webContents.openDevTools()
 }
 
@@ -55,11 +54,14 @@ ipcMain.on('log-in-req', (event, args) =>{
 
     if (password == doc.password) {
       openExcerciseSelectorWindow()
-      loginWindow.close()
+      event.sender.send('close-login-page')
     }
   })
 })
 
 ipcMain.on('sign-up-req', (event,args) =>{
   credentialDb.insert(args)
+
+  openExcerciseSelectorWindow()
+  event.sender.send('close-login-page')
 })
