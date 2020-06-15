@@ -22,27 +22,49 @@ function createLogInWindow () {
     }
   })
 
-  // and load the index.html of the app.
+  
   logInWin.loadFile('.\\login_page\\index.html')
   // Open the DevTools.
   logInWin.webContents.openDevTools()
 }
 
+function createExcerciseSelectorWindow(){
+  excerciseSelectWin = new BrowserWindow({
+    width: 500,
+    height: 400,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  excerciseSelectWin.loadFile('.\\exercise_selector\\index.html')
+  // Open the DevTools.
+  excerciseSelectWin.webContents.openDevTools()
+}
+
 app.on('ready', createLogInWindow)
 
 ipcMain.on('log-in-req', (event,args) =>{
-  const {user, pass} = args
-  console.log(user)
-  console.log(pass)
-  credentialDb.find({ username: user }, (err, docs)=>{
+  const {username, password} = args
+  credentialDb.find({ username: username }, (err, docs)=>{
     console.log(docs)
     if(!docs[0]){
-      console.log("error")
+      dialog.showMessageBox(logInWin,{
+        type: "error",
+        message:"Username or Password is incorrect"
+      }).catch(console.log)
       return
     }
-    const {password} = docs[0]
-    if(pass == password){
+
+    if(password == docs[0].password){
       console.log("success")
+      logInWin.close()
+      logInWin.once("close",createExcerciseSelectorWindow)
+      
     }
   })
+})
+
+ipcMain.on('sign-up-req', (event,args) =>{
+  credentialDb.insert(args)
 })

@@ -27,3 +27,9 @@ input{
   padding: 7px 0;
   background: transparent;
 }
+.username.error{
+  border-bottom: 2px solid red;
+}
+.password.error{
+  border-bottom: 2px solid red;
+}
