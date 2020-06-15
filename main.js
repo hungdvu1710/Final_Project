@@ -1,5 +1,6 @@
+'use strict';
 const { 
-  app, 
+  app,
   BrowserWindow,
   ipcMain,
   dialog,
@@ -12,9 +13,9 @@ const dataStore = require('nedb')
 const credentialDb = new dataStore({filename: path.join(__dirname, 'credentials.db')})
 credentialDb.loadDatabase()
 
+let loginWindow;
 function createLogInWindow () {
-  // Create the browser window.
-  logInWin = new BrowserWindow({
+  loginWindow = new BrowserWindow({
     width: 500,
     height: 400,
     webPreferences: {
@@ -22,14 +23,12 @@ function createLogInWindow () {
     }
   })
 
-  
-  logInWin.loadFile('.\\login_page\\index.html')
-  // Open the DevTools.
-  logInWin.webContents.openDevTools()
+  loginWindow.loadFile('.\\login_page\\index.html')
+  loginWindow.webContents.openDevTools()
 }
 
-function createExcerciseSelectorWindow(){
-  excerciseSelectWin = new BrowserWindow({
+function openExcerciseSelectorWindow(){
+  const excerciseSelectWin = new BrowserWindow({
     width: 500,
     height: 400,
     webPreferences: {
@@ -37,30 +36,26 @@ function createExcerciseSelectorWindow(){
     }
   })
 
-  excerciseSelectWin.loadFile('.\\exercise_selector\\index.html')
-  // Open the DevTools.
+  excerciseSelectWin.loadFile('.\\excercise_selector\\index.html');
   excerciseSelectWin.webContents.openDevTools()
 }
 
 app.on('ready', createLogInWindow)
 
-ipcMain.on('log-in-req', (event,args) =>{
-  const {username, password} = args
-  credentialDb.find({ username: username }, (err, docs)=>{
-    console.log(docs)
-    if(!docs[0]){
-      dialog.showMessageBox(logInWin,{
+ipcMain.on('log-in-req', (event, args) =>{
+  const { username, password } = args
+  credentialDb.findOne({ username }, (err, doc)=>{
+    if(!doc || (password != doc.password)){
+      dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
         type: "error",
         message:"Username or Password is incorrect"
-      }).catch(console.log)
+      }).catch(console.error)
       return
     }
 
-    if(password == docs[0].password){
-      console.log("success")
-      logInWin.close()
-      logInWin.once("close",createExcerciseSelectorWindow)
-      
+    if (password == doc.password) {
+      openExcerciseSelectorWindow()
+      loginWindow.close()
     }
   })
 })
