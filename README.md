@@ -28,8 +28,23 @@ Database:
 
 # DB structure suggestions:
 Excercises Bank: (accessed only by admin)
-  - Every time admin creates new excercises, append the excercises name to the excercises.db, then create new db for that excercise
-  - Suggested single excercise db structure example: {question: "#1", answer: ["a","b","c","d"], rightanswer: "b"}
+  - Every time admin creates new excercises, append the excercises name to the excercises.db, then update its content
+  - Suggested excercise db structure example: {question: "#1", answer: ["a","b","c","d"], rightanswer: "b"}
+
+  {
+    {
+      name: "#1",
+      created_at: ""
+      questions: [{number: "#1", answer: ["a","b","c","d"], rightanswer: "b"},{number: "#2", answer: ["a","b","c","d"], rightanswer: "c"}]
+    },
+    {},
+    {}
+  }
 User Lists:
-  - After new users added to credentials.db, create new db for that student
-  - Suggested single user db structure example: {excercise: "sample", score: "7/10"}
+  - Update user record whenever he/she finishes an excercise
+  - Suggested single user db structure example: 
+  {
+    username: "h",
+    password:"h", 
+    record:[{excercise: "sample", score: "7/10"},{excercise: "sample2", score: "7/10"}]
+  }
