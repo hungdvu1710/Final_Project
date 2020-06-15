@@ -23,3 +23,13 @@ Database:
   - MongoDB (Cool kid)
   - SQLite (Peasant)
   - NeDB (Master Race)
+
+# TODO: Additional validation for sign up (check for existed username)
+
+# DB structure suggestions:
+Excercises Bank: (accessed only by admin)
+  - Every time admin creates new excercises, append the excercises name to the excercises.db, then create new db for that excercise
+  - Suggested single excercise db structure example: {question: "#1", answer: ["a","b","c","d"], rightanswer: "b"}
+User Lists:
+  - After new users added to credentials.db, create new db for that student
+  - Suggested single user db structure example: {excercise: "sample", score: "7/10"}
