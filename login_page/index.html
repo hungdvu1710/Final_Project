@@ -4,8 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="pageContainer">
+    <div class="wrapper">
+      <h3>Welcome</h3>
+      <form action="">
+        <div class="credentials">
+          <div class="username">
+            <label for="username">
+              <input type="text" name="username" id="username" placeholder="Username" class="credentials">
+            </label>
+          </div>
+  
+          <div class="password">
+            <label for="password">
+              <input type="password" name="password" id="password" placeholder="Password" class="credentials">
+            </label>
+          </div>
+        </div>
+  
+        <br>
+  
+        <div class="actionSelection">
+          <button id="logIn"> Log in</button>
+          <button id="signUp"> Sign up</button>
+        </div>
+  
+        <!-- <div class="accountTypeSelection">
+          <input type="radio" id="admin" name="accountType" value="admin" checked="true"> 
+          <label for="admin">Log in as admin</label>
+          <br>
+  
+          <input type="radio" id="testTaker" name="accountType" value="testTaker" checked = "false">
+          <label for="testTaker">Log in as Test taker</label>
+          <br>
+        </div> -->
+      </form>
+    </div>
+  </div>
   <script src="./index.js"></script>
 </body>
 </html>

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "electron-fetch": "^1.4.0",
+    "nedb": "^1.8.0",
     "path": "^0.12.7"
   }
 }

@@ -1,0 +1,29 @@
+html, body{
+  background: linear-gradient(to right, white,#ff7675, #487eb0);
+}
+.pageContainer{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+.wrapper{
+  width: 390px;
+  min-height: 50vh;
+  background: #00cec9;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+}
+input{
+  font-family: 'Balsamiq Sans', cursive;
+  border: 0;
+  border-bottom: 2px solid gray;
+  outline: 0;
+  color: #2f3640;
+  padding: 7px 0;
+  background: transparent;
+}
