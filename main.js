@@ -1,5 +1,6 @@
+'use strict';
 const { 
-  app, 
+  app,
   BrowserWindow,
   ipcMain,
   dialog,
@@ -13,8 +14,7 @@ const credentialDb = new dataStore({filename: path.join(__dirname, 'credentials.
 credentialDb.loadDatabase()
 
 function createLogInWindow () {
-  // Create the browser window.
-  logInWin = new BrowserWindow({
+  let loginWindow = new BrowserWindow({
     width: 500,
     height: 400,
     webPreferences: {
@@ -22,27 +22,46 @@ function createLogInWindow () {
     }
   })
 
-  // and load the index.html of the app.
-  logInWin.loadFile('.\\login_page\\index.html')
-  // Open the DevTools.
-  logInWin.webContents.openDevTools()
+  loginWindow.loadFile('.\\login_page\\index.html')
+  loginWindow.webContents.openDevTools()
+}
+
+function openExcerciseSelectorWindow(){
+  const excerciseSelectWin = new BrowserWindow({
+    width: 500,
+    height: 400,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  excerciseSelectWin.loadFile('.\\excercise_selector\\index.html')
+  excerciseSelectWin.webContents.openDevTools()
 }
 
 app.on('ready', createLogInWindow)
 
-ipcMain.on('log-in-req', (event,args) =>{
-  const {user, pass} = args
-  console.log(user)
-  console.log(pass)
-  credentialDb.find({ username: user }, (err, docs)=>{
-    console.log(docs)
-    if(!docs[0]){
-      console.log("error")
+ipcMain.on('log-in-req', (event, args) =>{
+  const { username, password } = args
+  credentialDb.findOne({ username }, (err, doc)=>{
+    if(!doc || (password != doc.password)){
+      dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+        type: "error",
+        message:"Username or Password is incorrect"
+      }).catch(console.error)
       return
     }
-    const {password} = docs[0]
-    if(pass == password){
-      console.log("success")
+
+    if (password == doc.password) {
+      openExcerciseSelectorWindow()
+      event.sender.send('close-login-page')
     }
   })
+})
+
+ipcMain.on('sign-up-req', (event,args) =>{
+  credentialDb.insert(args)
+
+  openExcerciseSelectorWindow()
+  event.sender.send('close-login-page')
 })
