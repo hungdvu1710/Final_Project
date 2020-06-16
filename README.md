@@ -24,8 +24,6 @@ Database:
   - SQLite (Peasant)
   - NeDB (Master Race)
 
-# TODO: Additional validation for sign up (check for existed username)
-
 # DB structure suggestions:
 Excercises Bank: (accessed only by admin)
   - Every time admin creates new excercises, append the excercises name to the excercises.db, then update its content
