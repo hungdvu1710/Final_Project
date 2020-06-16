@@ -58,6 +58,21 @@ function openAdminWindow(){
   adminWin.loadFile('.\\admin\\index.html')
   adminWin.webContents.openDevTools()
 }
+
+function openTestPageWindow(excercise){
+  const testPageWin = new BrowserWindow({
+    width: 500,
+    height: 400,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  testPageWin.loadFile('.\\test_page\\index.html')
+  testPageWin.webContents.openDevTools()
+  console.log(excercise)
+  testPageWin.webContents.send('excercise-to-load',excercise)
+}
 //#endregion
 app.on('ready', createLogInWindow)
 
@@ -104,21 +119,22 @@ ipcMain.on('sign-up-req', (event,args) =>{
 })
 //#endregion
 
-credentialDb.find({}, function (err, docs) {
-  console.log(docs)
-})
 //#region handle excercise selector window
 ipcMain.on('get-all-excercises',(event,args)=>{
   let allExcercises = []
-  excerciseDb.find({}, function (err, docs) {
-    console.log(docs)
+  excerciseDb.find({}, (err, docs) => {
     docs.forEach(element => {
       const {name,questions} = element
       const excerciseLength = questions.length
       allExcercises.push({name,excerciseLength})
     });
-    console.log(allExcercises)
     event.sender.send('all-excercises-response',allExcercises)
   })
-  
 })
+ipcMain.on('req-single-excercise',(event,args)=>{
+  excerciseDb.findOne({name: args}, (err,doc)=>{
+    openTestPageWindow(doc)
+    event.sender.send('close-excercise-selector-page')
+  })
+})
+//#endregion

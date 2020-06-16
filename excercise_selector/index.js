@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, remote } = require("electron");
 
 const excerTable = document.querySelector(".all-excercises")
 
@@ -17,8 +17,17 @@ function appendRow(excercises){
       <td>${name}</td>
       <td>${excerciseLength}</td>
       <td>
-        <button id="${name}" class="excerciseChoice" onclick="switchToTestPage()">Choose</button>
+        <button class="excerciseChoice" onclick="switchToTestPage('${name}')">Choose</button>
       </td>
     `
   })
 }
+
+function switchToTestPage(excercise){
+  console.log(excercise)
+  ipcRenderer.send('req-single-excercise',excercise)
+}
+
+ipcRenderer.on('close-excercise-selector-page',(event,args)=>{
+  remote.getCurrentWindow().close()
+})
