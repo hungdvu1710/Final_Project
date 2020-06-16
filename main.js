@@ -71,7 +71,9 @@ function openTestPageWindow(excercise){
   testPageWin.loadFile('.\\test_page\\index.html')
   testPageWin.webContents.openDevTools()
   console.log(excercise)
-  testPageWin.webContents.send('excercise-to-load',excercise)
+  testPageWin.webContents.on('did-finish-load',()=>{
+    testPageWin.webContents.send('excercise-to-load',excercise)
+  })
 }
 //#endregion
 app.on('ready', createLogInWindow)
