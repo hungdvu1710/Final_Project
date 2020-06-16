@@ -1,22 +1,37 @@
+html,body{
+  background: #8e44ad;
+}
+.logOutWrapper{
+  float: right;
+}
 .pageContainer{
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 15px;
 }
+.selectorWrapper{
+  width: 390px;
+  min-height: 50vh;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+  background: #2ecc71;
+}
 table {
-  width: 100%;
+  max-width: 80%;
   border-radius: 5px;
   font-size: 12px;
   font-weight: normal;
   border: none;
   border-collapse: collapse;
-  width: 100%;
-  max-width: 100%;
   white-space: nowrap;
   background-color: white;
+  margin-left: auto;
+  margin-right: auto;
 }
 th {
   width: 15%;

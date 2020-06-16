@@ -113,11 +113,12 @@ ipcMain.on('sign-up-req', (event,args) =>{
       }).catch(console.error)
       return
     }
+    else{
+      credentialDb.insert(args)
+      openExcerciseSelectorWindow()
+      event.sender.send('close-login-page')
+    }
   })
-
-  credentialDb.insert(args)
-  openExcerciseSelectorWindow()
-  event.sender.send('close-login-page')
 })
 //#endregion
 
@@ -133,10 +134,16 @@ ipcMain.on('get-all-excercises',(event,args)=>{
     event.sender.send('all-excercises-response',allExcercises)
   })
 })
+
 ipcMain.on('req-single-excercise',(event,args)=>{
   excerciseDb.findOne({name: args}, (err,doc)=>{
     openTestPageWindow(doc)
     event.sender.send('close-excercise-selector-page')
   })
+})
+
+ipcMain.on('log-out-req',(event,args)=>{
+  createLogInWindow()
+  event.sender.send('close-excercise-selector-page')
 })
 //#endregion
