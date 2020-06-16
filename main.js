@@ -108,3 +108,17 @@ credentialDb.find({}, function (err, docs) {
   console.log(docs)
 })
 //#region handle excercise selector window
+ipcMain.on('get-all-excercises',(event,args)=>{
+  let allExcercises = []
+  excerciseDb.find({}, function (err, docs) {
+    console.log(docs)
+    docs.forEach(element => {
+      const {name,questions} = element
+      const excerciseLength = questions.length
+      allExcercises.push({name,excerciseLength})
+    });
+    console.log(allExcercises)
+    event.sender.send('all-excercises-response',allExcercises)
+  })
+  
+})
