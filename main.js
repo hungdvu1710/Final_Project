@@ -113,11 +113,12 @@ ipcMain.on('sign-up-req', (event,args) =>{
       }).catch(console.error)
       return
     }
+    else{
+      credentialDb.insert(args)
+      openExcerciseSelectorWindow()
+      event.sender.send('close-login-page')
+    }
   })
-
-  credentialDb.insert(args)
-  openExcerciseSelectorWindow()
-  event.sender.send('close-login-page')
 })
 //#endregion
 
