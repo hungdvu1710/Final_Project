@@ -33,7 +33,7 @@ function createLogInWindow () {
   loginWindow.webContents.openDevTools()
 }
 
-function openExcerciseSelectorWindow(){
+function openExcerciseSelectorWindow(username){
   const excerciseSelectWin = new BrowserWindow({
     width: 500,
     height: 400,
@@ -44,6 +44,9 @@ function openExcerciseSelectorWindow(){
 
   excerciseSelectWin.loadFile('.\\excercise_selector\\index.html')
   excerciseSelectWin.webContents.openDevTools()
+  excerciseSelectWin.webContents.on('did-finish-load',()=>{
+    excerciseSelectWin.webContents.send('user-logged-in',username)
+  })
 }
 
 function openAdminWindow(){
