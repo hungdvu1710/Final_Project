@@ -73,7 +73,6 @@ function openTestPageWindow(excercise){
 
   testPageWin.loadFile('.\\test_page\\index.html')
   testPageWin.webContents.openDevTools()
-  console.log(excercise)
   testPageWin.webContents.on('did-finish-load',()=>{
     testPageWin.webContents.send('excercise-to-load',excercise)
   })
@@ -115,8 +114,7 @@ ipcMain.on('sign-up-req', (event,args) =>{
         message:"Username already existed"
       }).catch(console.error)
       return
-    }
-    else{
+    } else {
       credentialDb.insert(args)
       openExcerciseSelectorWindow()
       event.sender.send('close-login-page')
@@ -148,5 +146,50 @@ ipcMain.on('req-single-excercise',(event,args)=>{
 ipcMain.on('log-out-req',(event,args)=>{
   createLogInWindow()
   event.sender.send('close-excercise-selector-page')
+})
+//#endregion
+
+//#region handle test_page window
+function arraysEqual(_arr1, _arr2) {
+
+  if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
+    return false;
+
+  const arr1 = _arr1.concat().sort();
+  const arr2 = _arr2.concat().sort();
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i])
+      return false;
+  }
+
+  return true;
+}
+
+ipcMain.on('user-responses',(event,args)=>{
+  const {name,responseSet} = args
+
+  excerciseDb.findOne({name},(e,doc)=>{
+    let score = 0
+    const {questions} = doc
+
+    for(let i=0; i<questions.length; i++){
+      const {rightanswer} = questions[i]
+      const {responses} = responseSet[i]
+
+      if(arraysEqual(rightanswer,responses)){
+        score++
+      }
+    }
+
+    dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+      title: "Score",
+      message: `You've earned yourself the score of ${score}/${questions.length}`
+    }).then(()=>{
+      openExcerciseSelectorWindow()
+      event.sender.send('close-test-page')
+    }).catch(console.error)
+    
+  })
 })
 //#endregion

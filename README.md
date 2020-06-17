@@ -46,3 +46,6 @@ User Lists:
     password:"h", 
     record:[{excercise: "sample", score: "7/10"},{excercise: "sample2", score: "7/10"}]
   }
+
+# Suggestions on score calculation:
+- Get data from test_page then compare it with right answers from db
