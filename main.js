@@ -168,7 +168,7 @@ function arraysEqual(_arr1, _arr2) {
 }
 
 ipcMain.on('user-responses',(event,args)=>{
-  const {name,responseSet} = args
+  const {name,responseSet,username} = args
 
   excerciseDb.findOne({name},(e,doc)=>{
     let score = 0

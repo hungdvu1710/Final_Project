@@ -96,11 +96,11 @@ async function getUserResponse(){
       responses.push(e.value)
     })
 
-    responseSet.push({question, responses,username})
+    responseSet.push({question, responses})
   })
 
   console.log(responseSet)
-  ipcRenderer.send('user-responses',{name,responseSet})
+  ipcRenderer.send('user-responses',{name,responseSet,username})
 }
 
 ipcRenderer.on('close-test-page',(event,args)=>{
