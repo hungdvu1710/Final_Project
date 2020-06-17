@@ -62,7 +62,7 @@ function openAdminWindow(){
   adminWin.webContents.openDevTools()
 }
 
-function openTestPageWindow(excercise){
+function openTestPageWindow(testInfo){ //testInfo includes the excercise and the username of the test taker
   const testPageWin = new BrowserWindow({
     width: 500,
     height: 400,
@@ -74,7 +74,7 @@ function openTestPageWindow(excercise){
   testPageWin.loadFile('.\\test_page\\index.html')
   testPageWin.webContents.openDevTools()
   testPageWin.webContents.on('did-finish-load',()=>{
-    testPageWin.webContents.send('excercise-to-load',excercise)
+    testPageWin.webContents.send('excercise-to-load',testInfo)
   })
 }
 //#endregion
@@ -139,7 +139,7 @@ ipcMain.on('get-all-excercises',(event,args)=>{
 ipcMain.on('req-single-excercise',(event,args)=>{
   const {username,excercise} = args
   excerciseDb.findOne({name: excercise}, (err,doc)=>{
-    openTestPageWindow(doc)
+    openTestPageWindow({username,excercise:doc})
     event.sender.send('close-excercise-selector-page')
   })
 })

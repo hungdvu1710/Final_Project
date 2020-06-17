@@ -5,7 +5,8 @@ submitBtn.addEventListener("click",getUserResponse)
 
 const excercisesLoader = new Promise((resolve,reject)=>{
   ipcRenderer.on('excercise-to-load',(event,args)=>{
-    const {questions,name} = args
+    const {username, excercise} = args
+    const {questions,name} = excercise
     questionSet = questions
 
     questions.forEach((element)=>{
@@ -20,7 +21,7 @@ const excercisesLoader = new Promise((resolve,reject)=>{
       }
     })
 
-    resolve({questions,name})
+    resolve({username,questions,name})
   })
 })
 
@@ -83,7 +84,7 @@ function addSingleAnswer(answer,question,answerRow,type){
 }
 
 async function getUserResponse(){
-  const {questions,name} = await excercisesLoader
+  const {questions,name,username} = await excercisesLoader
   let responseSet = []
 
   questions.forEach((element)=>{
@@ -95,7 +96,7 @@ async function getUserResponse(){
       responses.push(e.value)
     })
 
-    responseSet.push({question, responses})
+    responseSet.push({question, responses,username})
   })
 
   console.log(responseSet)
