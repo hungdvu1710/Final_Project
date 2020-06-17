@@ -1,6 +1,8 @@
 const { ipcRenderer, remote } = require("electron");
 
 const excerTable = document.querySelector(".all-excercises")
+const logOutBtn = document.querySelector("#logOut")
+logOutBtn.addEventListener('click',handleLogOut)
 
 ipcRenderer.send('get-all-excercises')
 
@@ -28,6 +30,10 @@ function appendRow(excercises){
 function switchToTestPage(excercise){
   console.log(excercise)
   ipcRenderer.send('req-single-excercise',excercise)
+}
+
+function handleLogOut(){
+  ipcRenderer.send('log-out-req')
 }
 
 ipcRenderer.on('close-excercise-selector-page',(event,args)=>{
