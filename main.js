@@ -33,7 +33,7 @@ function createLogInWindow () {
   loginWindow.webContents.openDevTools()
 }
 
-function openExcerciseSelectorWindow(){
+function openExcerciseSelectorWindow(username){
   const excerciseSelectWin = new BrowserWindow({
     width: 500,
     height: 400,
@@ -44,6 +44,9 @@ function openExcerciseSelectorWindow(){
 
   excerciseSelectWin.loadFile('.\\excercise_selector\\index.html')
   excerciseSelectWin.webContents.openDevTools()
+  excerciseSelectWin.webContents.on('did-finish-load',()=>{
+    excerciseSelectWin.webContents.send('user-logged-in',username)
+  })
 }
 
 function openAdminWindow(){
@@ -96,7 +99,7 @@ ipcMain.on('log-in-req', (event, args) =>{
     }
 
     if (password == doc.password) {
-      openExcerciseSelectorWindow()
+      openExcerciseSelectorWindow(username)
       event.sender.send('close-login-page')
     }
   })
@@ -113,7 +116,7 @@ ipcMain.on('sign-up-req', (event,args) =>{
       return
     } else {
       credentialDb.insert(args)
-      openExcerciseSelectorWindow()
+      openExcerciseSelectorWindow(username)
       event.sender.send('close-login-page')
     }
   })
@@ -134,7 +137,8 @@ ipcMain.on('get-all-excercises',(event,args)=>{
 })
 
 ipcMain.on('req-single-excercise',(event,args)=>{
-  excerciseDb.findOne({name: args}, (err,doc)=>{
+  const {username,excercise} = args
+  excerciseDb.findOne({name: excercise}, (err,doc)=>{
     openTestPageWindow(doc)
     event.sender.send('close-excercise-selector-page')
   })
@@ -183,7 +187,7 @@ ipcMain.on('user-responses',(event,args)=>{
       title: "Score",
       message: `You've earned yourself the score of ${score}/${questions.length}`
     }).then(()=>{
-      openExcerciseSelectorWindow()
+      openExcerciseSelectorWindow("Hoho") //hard fixed
       event.sender.send('close-test-page')
     }).catch(console.error)
     
