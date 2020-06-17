@@ -31,6 +31,7 @@ function addSingleChoiceQuestion(question,answers){
     <td>${question}</td>
   `
   const answerRow = questionTable.insertRow(-1)
+  
   answers.forEach(answer =>{
     addSingleAnswer(answer,question,answerRow,"radio")
   })
@@ -43,6 +44,7 @@ function addMultiChoiceQuestion(question,answers){
     <td>${question}</td>
   `
   const answerRow = questionTable.insertRow(-1)
+
   answers.forEach(answer =>{
     addSingleAnswer(answer,question,answerRow,"checkbox")
   })
@@ -55,6 +57,7 @@ function addTFQuestion(question,answers){
     <td>${question}</td>
   `
   const answerRow = questionTable.insertRow(-1)
+
   answers.forEach(answer =>{
     addSingleAnswer(answer,question,answerRow,"radio")
   })
@@ -82,6 +85,7 @@ function addSingleAnswer(answer,question,answerRow,type){
 async function getUserResponse(){
   const {questions,name} = await excercisesLoader
   let responseSet = []
+
   questions.forEach((element)=>{
     const {question,type} = element
     const questionShortenName = question.replace(/\s+/g, " ").split(" ").join("")
@@ -90,8 +94,10 @@ async function getUserResponse(){
     document.querySelectorAll(`.${questionShortenName}:checked`).forEach(e => {
       responses.push(e.value)
     })
+
     responseSet.push({question, responses})
   })
+
   console.log(responseSet)
   ipcRenderer.send('user-responses',{name,responseSet})
 }

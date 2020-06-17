@@ -111,8 +111,7 @@ ipcMain.on('sign-up-req', (event,args) =>{
         message:"Username already existed"
       }).catch(console.error)
       return
-    }
-    else{
+    } else {
       credentialDb.insert(args)
       openExcerciseSelectorWindow()
       event.sender.send('close-login-page')
@@ -164,7 +163,7 @@ ipcMain.on('user-responses',(event,args)=>{
   excerciseDb.findOne({name},(e,doc)=>{
     let score = 0
     const {questions} = doc
-    
+
     for(let i=0; i<questions.length; i++){
       const {rightanswer} = questions[i]
       const {responses} = responseSet[i]
