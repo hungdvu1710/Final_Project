@@ -2,12 +2,16 @@ const { ipcRenderer,remote } = require("electron");
 const questionTable = document.querySelector(".all-questions")
 const submitBtn = document.querySelector(".submit")
 submitBtn.addEventListener("click",getUserResponse)
+const MINUTE_TO_MS = 1000*60
 
 const excercisesLoader = new Promise((resolve,reject)=>{
   ipcRenderer.on('excercise-to-load',(event,args)=>{
     const {username, excercise} = args
-    const {questions,name} = excercise
+    const {questions,name,givenTime} = excercise
     questionSet = questions
+
+    // const deadline = Date.now() + givenTime * MINUTE_TO_MS
+    setTimer(givenTime)
 
     questions.forEach((element)=>{
       const{question, type, answers,rightanswer} = element
@@ -28,8 +32,7 @@ const excercisesLoader = new Promise((resolve,reject)=>{
 function addSingleChoiceQuestion(question,answers){
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
-    <td>Question</td>
-    <td>${question}</td>
+    <th>Question: ${question}</th>
   `
   const answerRow = questionTable.insertRow(-1)
   
@@ -41,8 +44,7 @@ function addSingleChoiceQuestion(question,answers){
 function addMultiChoiceQuestion(question,answers){
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
-    <td>Question</td>
-    <td>${question}</td>
+    <th>Question: ${question}</th>
   `
   const answerRow = questionTable.insertRow(-1)
 
@@ -54,8 +56,7 @@ function addMultiChoiceQuestion(question,answers){
 function addTFQuestion(question,answers){
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
-    <td>Question</td>
-    <td>${question}</td>
+    <th>Question: ${question}</th>
   `
   const answerRow = questionTable.insertRow(-1)
 
@@ -101,6 +102,29 @@ async function getUserResponse(){
 
   console.log(responseSet)
   ipcRenderer.send('user-responses',{name,responseSet,username})
+}
+
+function setTimer(givenTime){
+  let timeLeft = givenTime * MINUTE_TO_MS 
+
+  const timer = setInterval(()=>{
+    let secondToDisplay
+
+    if(timeLeft === 0){
+      getUserResponse()
+      clearInterval(timer)
+    } 
+
+    const minutes = Math.floor(timeLeft/MINUTE_TO_MS)
+    const seconds = (timeLeft/1000)%60
+
+    if(seconds < 10) secondToDisplay = "0" + seconds
+    else secondToDisplay = seconds
+
+    document.querySelector(".timer").innerHTML = `${minutes}:${secondToDisplay}`
+
+    timeLeft -= 1000
+  },1000)
 }
 
 ipcRenderer.on('close-test-page',(event,args)=>{
