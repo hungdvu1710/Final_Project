@@ -115,7 +115,7 @@ ipcMain.on('sign-up-req', (event,args) =>{
       }).catch(console.error)
       return
     } else {
-      credentialDb.insert(args)
+      credentialDb.insert({username, password, record: []})
       openExcerciseSelectorWindow(username)
       event.sender.send('close-login-page')
     }
@@ -191,6 +191,30 @@ ipcMain.on('user-responses',(event,args)=>{
       event.sender.send('close-test-page')
     }).catch(console.error)
     
+    credentialDb.findOne({username},(e,doc)=>{
+      const {record} = doc
+      console.log(record)
+      const oldResult = record.filter(element=>element.excercise === name)
+      
+      if(oldResult[0]){
+        
+        console.log(oldResult)
+
+        credentialDb.update({username},{$pull: {record: oldResult[0]}},{},(e,numReplaced)=>{
+          console.log(numReplaced)
+          oldResult[0].score = score
+
+          credentialDb.update({username},{$push: {record: oldResult[0]}},{},(e,numReplaced)=>{
+            console.log(numReplaced)
+          })
+        })
+      } else{
+        credentialDb.update({username},{$push: {record: {excercise: name, score}}},{},(e,numReplaced)=>{
+          console.log(numReplaced)
+        })
+      }
+      
+    })
   })
 })
 //#endregion

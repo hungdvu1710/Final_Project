@@ -1,0 +1,71 @@
+html,
+body {
+	height: 100%;
+}
+.timer{
+  font-family: 'Roboto Mono', monospace;
+}
+body {
+	margin: 0;
+	background: linear-gradient(to right, #81ecec, #5f2c82);
+	font-family: sans-serif;
+	font-weight: 100;
+}
+table {
+  width: 100%;
+	border-collapse: collapse;
+	overflow: hidden;
+}
+
+th,
+td {
+	padding: 15px;
+	background-color: rgba(255,255,255,0.2);
+	color: #2d3436;
+}
+
+th {
+	text-align: left;
+}
+
+h4{
+  font-family: 'MuseoModerno', cursive;
+  margin-top:10px;
+  margin-bottom: 5px;
+}
+
+input:hover{
+  cursor: pointer;
+}
+
+label {
+  display: inline-flex;
+  align-items: baseline; 
+}
+
+input:checked ~ label{
+  color: #d63031;
+  font-size: larger;
+}
+
+.submit{
+  color: #fff !important;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: #ed3330;
+  padding: 5px;
+  margin: 15px;
+  border-radius: 5px;
+  display: inline-block;
+  border: none;
+  transition: all 0.4s ease 0s;
+}
+
+.submit:hover {
+  background: #434343;
+  letter-spacing: 1px;
+  -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+  -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+  box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+  transition: all 0.4s ease 0s;
+  }
