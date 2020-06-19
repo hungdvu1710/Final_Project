@@ -148,6 +148,14 @@ ipcMain.on('log-out-req',(event,args)=>{
   createLogInWindow()
   event.sender.send('close-excercise-selector-page')
 })
+
+ipcMain.on('get-user-record',(event,args)=>{
+  credentialDb.findOne({username:args},(err,doc)=>{
+    const {record} = doc
+    event.sender.send("user-record-response",record)
+  })
+})
+
 //#endregion
 
 //#region handle test_page window

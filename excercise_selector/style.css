@@ -1,5 +1,6 @@
 html,body{
-  background: #8e44ad;
+  background: rgb(36,36,0);
+  background: linear-gradient(to right, rgba(36,36,0,1) , rgba(177,56,158,1) , rgba(0,212,255,1) );
 }
 
 .logOutWrapper{
@@ -18,7 +19,7 @@ html,body{
   background-color: RoyalBlue;
 }
 .pageContainer{
-  width: 60%;
+  width: 65%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -30,35 +31,56 @@ html,body{
 
 .selectorWrapper{
   width: -webkit-fill-available;
-  max-width: 70%;
+  max-width: 60%;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+  background: #2ecc71;
+  margin-bottom: 5px;
+}
+
+.recordWrapper{
+  margin-top: 15px;
+  width: -webkit-fill-available;
+  max-width: 45%;
   border-radius: 10px;
   overflow: hidden;
   text-align: center;
   box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
   background: #2ecc71;
 }
-table {
-  border: solid 1px #DDEEEE;
+
+table{
   border-collapse: collapse;
-  border-spacing: 0;
-  font: normal 13px Arial, sans-serif;
   margin-right: auto;
   margin-left: auto;
+}
+
+table.all-excercises {
   margin-bottom: 20px;
 }
+
+table.records{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 th {
   background-color: #DDEFEF;
   border: solid 1px #DDEEEE;
   color: #336B6B;
-  padding: 10px;
+  padding: 5px;
   text-align: left;
   text-shadow: 1px 1px 1px #fff;
+  font-family: 'Balsamiq Sans', cursive;
+  text-align: center;
 }
 td {
-  border: solid 1px #DDEEEE;
   color: #333;
-  padding: 10px;
-  text-shadow: 1px 1px 1px #fff;
+  border-bottom: solid #636e72;
+  border-width: thin;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 h3{
   font-family: 'MuseoModerno', cursive;
