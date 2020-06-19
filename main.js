@@ -123,19 +123,20 @@ ipcMain.on('sign-up-req', (event,args) =>{
 })
 //#endregion
 
-//#region handle excercise selector window
+// Excercise GET request used for both admin and excercise-selector
 ipcMain.on('get-all-excercises',(event,args)=>{
   let allExcercises = []
   excerciseDb.find({}, (err, docs) => {
     docs.forEach(element => {
-      const {name,questions} = element
+      const {name,questions,givenTime} = element
       const excerciseLength = questions.length
-      allExcercises.push({name,excerciseLength})
+      allExcercises.push({name,excerciseLength,givenTime})
     });
     event.sender.send('all-excercises-response',allExcercises)
   })
 })
 
+//#region handle excercise selector window
 ipcMain.on('req-single-excercise',(event,args)=>{
   const {username,excercise} = args
   excerciseDb.findOne({name: excercise}, (err,doc)=>{
@@ -226,3 +227,10 @@ ipcMain.on('user-responses',(event,args)=>{
   })
 })
 //#endregion
+
+//#region handle admin window
+
+ipcMain.on('admin-log-out-req',(event,args)=>{
+  createLogInWindow()
+  event.sender.send('close-admin-window')
+})
