@@ -229,8 +229,14 @@ ipcMain.on('user-responses',(event,args)=>{
 //#endregion
 
 //#region handle admin window
-
 ipcMain.on('admin-log-out-req',(event,args)=>{
   createLogInWindow()
   event.sender.send('close-admin-window')
 })
+ipcMain.on('get-all-users',(event,args)=>{
+  let allUsers = []
+  credentialDb.find({}, (err, docs) => {
+    event.sender.send('all-users-response',docs)
+  })
+})
+//#endregion

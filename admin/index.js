@@ -1,13 +1,18 @@
 const {ipcRenderer,remote} = require('electron')
 
 const excerTable = document.querySelector(".all-excercises")
+const userTable = document.querySelector(".all-users")
 const logOutBtn = document.querySelector("#logOut")
 logOutBtn.addEventListener('click',handleLogOut)
 
 ipcRenderer.send('get-all-excercises')
+ipcRenderer.send('get-all-users')
 
 ipcRenderer.on('all-excercises-response',(event,args) =>{
   appendExcerciseRow(args)
+})
+ipcRenderer.on('all-users-response',(event,args)=>{
+  appendUserRow(args)
 })
 
 function appendExcerciseRow(excercises){
@@ -29,6 +34,10 @@ function appendExcerciseRow(excercises){
       </td>
     `
   })
+}
+
+function appendUserRow(users){
+  console.log(users)
 }
 
 function handleLogOut(){

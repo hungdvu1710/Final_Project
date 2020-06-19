@@ -37,6 +37,18 @@ html,body{
   background: #2ecc71;
   margin-bottom: 5px;
 }
+
+.userInfoWrapper{
+  margin-top: 15px;
+  width: -webkit-fill-available;
+  max-width: 45%;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+  background: #2ecc71;
+}
+
 table{
   border-collapse: collapse;
   margin-right: auto;
