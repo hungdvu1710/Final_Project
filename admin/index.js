@@ -141,7 +141,6 @@ function submitNewExcercise(){
   }
 
   ipcRenderer.send('add-new-excercise',{newExcerciseName,timeAllowed})
-
   closeForm()
 }
 
