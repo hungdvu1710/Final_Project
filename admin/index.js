@@ -38,6 +38,51 @@ function appendExcerciseRow(excercises){
 
 function appendUserRow(users){
   console.log(users)
+
+  users.forEach(user=>{
+    const {username,record} = user
+    if(username != 'admin'){
+      const newRow = userTable.insertRow(-1)
+
+      const nameTag = document.createElement("td")
+      nameTag.innerText = username
+      newRow.appendChild(nameTag)
+
+      const recordTag = document.createElement("td")
+      recordTag.appendChild(addSingleRecord(record))
+      newRow.appendChild(recordTag)
+    }
+  })
+}
+
+function addSingleRecord(record){
+  const recordDropdown = document.createElement("div")
+  recordDropdown.setAttribute("class","dropdown")
+
+  const dropBtn = document.createElement("button")
+  dropBtn.setAttribute("class","dropbtn")
+  dropBtn.innerHTML =`
+    Record
+    <i class="fa fa-caret-down"></i>
+  `
+  recordDropdown.appendChild(dropBtn)
+
+  const dropContent = document.createElement("div")
+  dropContent.setAttribute("class","dropdown-content")
+  recordDropdown.appendChild(dropContent)
+
+  record.forEach(element =>{
+    if(element){
+      const {excercise,score} = element
+
+      const recordText = document.createElement("p")
+      recordText.innerText = `${excercise}: ${score}`
+
+      dropContent.appendChild(recordText)
+    }
+  })
+
+  return recordDropdown
 }
 
 function handleLogOut(){
