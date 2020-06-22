@@ -49,8 +49,10 @@ function openExcerciseSelectorWindow(username){
   })
 }
 
+let adminWin
+
 function openAdminWindow(){
-  const adminWin = new BrowserWindow({
+  adminWin = new BrowserWindow({
     width: 500,
     height: 400,
     webPreferences: {
@@ -60,6 +62,17 @@ function openAdminWindow(){
 
   adminWin.loadFile('.\\admin\\index.html')
   adminWin.webContents.openDevTools()
+}
+
+function openExcerciseEditorWindow(name){
+  const excerciseEditor = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    parent: adminWin,
+    modal: true  
+  })
+  excerciseEditor.loadFile('.\\single-excercise-editor\\index.html')
 }
 
 function openTestPageWindow(testInfo){ //testInfo includes the excercise and the username of the test taker
@@ -238,5 +251,14 @@ ipcMain.on('get-all-users',(event,args)=>{
   credentialDb.find({}, (err, docs) => {
     event.sender.send('all-users-response',docs)
   })
+})
+ipcMain.on('open-editor',(event,args)=>{
+  openExcerciseEditorWindow(args)
+})
+
+ipcMain.on('add-new-excercise',(event,args)=>{
+  const {newExcerciseName,timeAllowed} = args
+  excerciseDb.insert({name:newExcerciseName,givenTime:timeAllowed,questions:[]})
+  openExcerciseEditorWindow(newExcerciseName)
 })
 //#endregion

@@ -1,5 +1,4 @@
 html,body{
-  background: rgb(36,36,0);
   background: linear-gradient(to right, rgba(36,36,0,1) , rgba(177,56,158,1) , rgba(0,212,255,1) );
 }
 
@@ -14,6 +13,74 @@ html,body{
 
 .logOut:hover {
   background-color: RoyalBlue;
+}
+
+.addNewExcercise{
+  text-align: right;
+  padding: 0px 12px;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  position: absolute;
+  z-index: 1;
+}
+
+.addNewExcercise:hover .tooltiptext {
+  visibility: visible;
+}
+
+.popupForm {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+.form-container {
+  max-width: 200px;
+  padding: 10px;
+  background-color: white;
+}
+
+.form-container input{
+  width: 100%;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+.form-container input:focus{
+  background-color: #ddd;
+  outline: none;
+}
+
+.form-container button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+.form-container .cancelBtn {
+  background-color: red;
+}
+
+.form-container .submitBtn:hover, .cancelBtn:hover {
+  opacity: 1;
 }
 
 .pageContainer{
@@ -101,7 +168,7 @@ table{
   margin-left: auto;
 }
 
-table.all-excercises {
+table.allExcercises {
   margin-bottom: 20px;
 }
 
@@ -128,3 +195,62 @@ h3{
   margin-top:10px;
   margin-bottom: 15px;
 }
+
+/* Popup box BEGIN */
+.hover_bkgr_fricc{
+  background:rgba(0,0,0,.4);
+  cursor:pointer;
+  display:none;
+  height:100%;
+  position:fixed;
+  text-align:center;
+  top:0;
+  width:100%;
+  z-index:10000;
+}
+.hover_bkgr_fricc .helper{
+  display:inline-block;
+  height:100%;
+  vertical-align:middle;
+}
+.hover_bkgr_fricc > div {
+  background-color: #fff;
+  box-shadow: 10px 10px 60px #555;
+  display: inline-block;
+  height: auto;
+  max-width: 551px;
+  min-height: 100px;
+  vertical-align: middle;
+  width: 60%;
+  position: relative;
+  border-radius: 8px;
+  padding: 15px 5%;
+}
+.popupCloseButton {
+  background-color: #fff;
+  border: 3px solid #999;
+  border-radius: 50px;
+  cursor: pointer;
+  display: inline-block;
+  font-family: arial;
+  font-weight: bold;
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 25px;
+  line-height: 30px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+}
+.popupCloseButton:hover {
+  background-color: #ccc;
+}
+.trigger_popup_fricc {
+  cursor: pointer;
+  font-size: 20px;
+  margin: 20px;
+  display: inline-block;
+  font-weight: bold;
+}
+/* Popup box BEGIN */
