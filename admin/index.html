@@ -3,9 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <title>Admin</title>
 </head>
 <body>
+  <div class="logOutWrapper">
+    <button class="logOut" id="logOut">
+      <i class="fa fa-sign-out fa-lg"></i>
+    </button>
+  </div>
+
+  <div class = "pageContainer">
+    <div class= "selectorWrapper">
+      <h3>All excercises</h3>
+
+      <table class="all-excercises">
+        <tr>
+          <th>Excercise</th>
+          <th>Length</th>
+          <th>Duration</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </table>
+    </div>
+
+    <div class="userInfoWrapper">
+      <table class="all-users">
+        <tr>
+          <th>User</th>
+          <th>Record</th>
+        </tr>
+      </table>
+    </div>
+  </div>
   <script src="./index.js"></script>
 </body>
 </html>

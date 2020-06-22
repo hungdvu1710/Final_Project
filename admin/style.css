@@ -1,0 +1,130 @@
+html,body{
+  background: rgb(36,36,0);
+  background: linear-gradient(to right, rgba(36,36,0,1) , rgba(177,56,158,1) , rgba(0,212,255,1) );
+}
+
+.logOutWrapper{
+  float: left;
+}
+
+.logOut {
+  padding: 8px 8px;
+  cursor: pointer;
+}
+
+.logOut:hover {
+  background-color: RoyalBlue;
+}
+
+.pageContainer{
+  width: 65%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selectorWrapper{
+  width: -webkit-fill-available;
+  max-width: 80%;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+  background: #2ecc71;
+  margin-bottom: 5px;
+}
+
+.userInfoWrapper{
+  margin-top: 15px;
+  width: -webkit-fill-available;
+  max-width: 45%;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
+  background: #2ecc71;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  border: none;
+  outline: none;
+  color: #d63031;
+  padding: 4px 6px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #74b9ff;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content p {
+  float: none;
+  color: black;
+  padding: 3px 6px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  margin: 5px;
+}
+
+.dropdown-content p:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+table{
+  border-collapse: collapse;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+table.all-excercises {
+  margin-bottom: 20px;
+}
+
+th {
+  background-color: #DDEFEF;
+  border: solid 1px #DDEEEE;
+  color: #336B6B;
+  padding: 5px;
+  text-align: left;
+  text-shadow: 1px 1px 1px #fff;
+  font-family: 'Balsamiq Sans', cursive;
+  text-align: center;
+}
+
+td {
+  color: #333;
+  border-bottom: solid #636e72;
+  border-width: thin;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+h3{
+  font-family: 'MuseoModerno', cursive;
+  margin-top:10px;
+  margin-bottom: 15px;
+}
