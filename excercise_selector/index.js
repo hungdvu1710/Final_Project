@@ -1,7 +1,7 @@
 const { ipcRenderer, remote } = require("electron");
 const { resolve } = require("path");
 
-const excerTable = document.querySelector(".all-excercises")
+const excerTable = document.querySelector(".allExcercises")
 const recordTable = document.querySelector(".records")
 const logOutBtn = document.querySelector("#logOut")
 logOutBtn.addEventListener('click',handleLogOut)

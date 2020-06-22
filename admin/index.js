@@ -1,9 +1,32 @@
 const {ipcRenderer,remote} = require('electron')
+const {dialog} = remote
 
-const excerTable = document.querySelector(".all-excercises")
-const userTable = document.querySelector(".all-users")
+const excerTable = document.querySelector(".allExcercises")
+const userTable = document.querySelector(".allUsers")
 const logOutBtn = document.querySelector("#logOut")
+const excerciseNameInput = document.querySelector(".excerciseName")
+const timeAllowedInput = document.querySelector(".timeAllowed")
+
+const invalidCharsInTime = ["-", "+", "e", "E"];
+const invalidCharsInExcerciseName = [";", ",", "#", "."];
+
+timeAllowedInput.addEventListener("keydown", function (e) {
+  if (invalidCharsInTime.includes(e.key)) {
+    e.preventDefault()
+  }
+})
+
+excerciseNameInput.addEventListener("keydown", function (e) {
+  if (invalidCharsInExcerciseName.includes(e.key)) {
+    e.preventDefault()
+  }
+})
+
+document.querySelector(".addingFormOpener").addEventListener("click",openForm)
+document.querySelector(".submitBtn").addEventListener("click",submitNewExcercise)
+document.querySelector(".cancelBtn").addEventListener("click",closeForm)
 logOutBtn.addEventListener('click',handleLogOut)
+document.querySelector("form").addEventListener("submit", (e) => e.preventDefault())
 
 ipcRenderer.send('get-all-excercises')
 ipcRenderer.send('get-all-users')
@@ -31,7 +54,7 @@ function appendExcerciseRow(excercises){
       </td>
       <td>
         <button class="excerciseRemoval" onclick="deleteTest('${name}')">Delete</button>
-      </td>
+      </td> 
     `
   })
 }
@@ -83,6 +106,61 @@ function addSingleRecord(record){
   })
 
   return recordDropdown
+}
+
+function openForm() {
+  document.querySelector(".popupForm").style.display = "block"
+}
+
+function submitNewExcercise(){
+  const newExcerciseName = excerciseNameInput.value
+  const timeAllowed = timeAllowedInput.value
+  
+  if(!isNameValid(newExcerciseName)){
+    dialog.showMessageBox({
+      type: "error",
+      message: "Please type in excercise's name"
+    })
+    return
+  }
+
+  if(!timeAllowed){
+    dialog.showMessageBox({
+      type: "error",
+      message: "Please type in time"
+    })
+    return
+  }
+
+  if(timeAllowed == 0){
+    dialog.showMessageBox({
+      type: "error",
+      message: "Allowed time should be bigger than 0"
+    })
+    return
+  }
+
+  ipcRenderer.send('add-new-excercise',{newExcerciseName,timeAllowed})
+
+  closeForm()
+}
+
+function closeForm() {
+  document.querySelector(".popupForm").style.display = "none"
+  timeAllowedInput.value = ""
+  excerciseNameInput.value = ""
+}
+
+function editTest(name){
+  ipcRenderer.send('open-editor',{name})
+}
+
+function isNameValid(name){
+  if (typeof name === "string" && name.trim() != "") {
+    return true;
+  }
+
+  return false;
 }
 
 function handleLogOut(){

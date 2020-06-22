@@ -18,7 +18,28 @@
     <div class= "selectorWrapper">
       <h3>All excercises</h3>
 
-      <table class="all-excercises">
+      <div class="addNewExcercise">
+        <button class="addingFormOpener">
+          <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
+          <span class="tooltiptext">Add new excercise</span>
+        </button>
+
+        <div class="popupForm">
+          <form action="" class="form-container">
+
+            <label for="excerciseName"><b>Name</b></label>
+            <input type="text" placeholder="Enter Name" name="excerciseName" class="excerciseName">
+        
+            <label for="timeAllowed"><b>Time allowed (minute)</b></label>
+            <input type="number" placeholder="Enter Time" name="timeAllowed" class="timeAllowed" min="0">
+        
+            <button type="submit" class="submitBtn">Submit</button>
+            <button type="button" class="cancelBtn">Close</button>
+          </form>
+        </div>
+      </div>
+
+      <table class="allExcercises">
         <tr>
           <th>Excercise</th>
           <th>Length</th>
@@ -30,7 +51,7 @@
     </div>
 
     <div class="userInfoWrapper">
-      <table class="all-users">
+      <table class="allUsers">
         <tr>
           <th>User</th>
           <th>Record</th>
