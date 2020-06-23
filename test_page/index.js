@@ -34,7 +34,7 @@ function addSingleChoiceQuestion(question,answers,accessibility){
   if(accessibility == "disabled"){
     return
   }
-  
+
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
     <th>Question: ${question}</th>
@@ -102,7 +102,7 @@ async function getUserResponse(){
   let responseSet = []
 
   questions.forEach((element)=>{
-    const {question,type} = element
+    const {question} = element
     const questionShortenName = question.replace(/\s+/g, " ").split(" ").join("")
     let responses = []
 
