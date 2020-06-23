@@ -83,7 +83,7 @@ function addSingleRecord(record){
   recordDropdown.setAttribute("class","dropdown")
 
   const dropBtn = document.createElement("button")
-  dropBtn.setAttribute("class","dropbtn")
+  dropBtn.setAttribute("class","dropBtn")
   dropBtn.innerHTML =`
     Record
     <i class="fa fa-caret-down"></i>
@@ -91,7 +91,7 @@ function addSingleRecord(record){
   recordDropdown.appendChild(dropBtn)
 
   const dropContent = document.createElement("div")
-  dropContent.setAttribute("class","dropdown-content")
+  dropContent.setAttribute("class","dropdownContent")
   recordDropdown.appendChild(dropContent)
 
   record.forEach(element =>{

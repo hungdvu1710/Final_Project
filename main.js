@@ -70,7 +70,7 @@ function openExcerciseEditorWindow(name){
     parent: adminWin,
     modal: true  
   })
-  excerciseEditor.loadFile('.\\single-excercise-editor\\index.html')
+  excerciseEditor.loadFile('.\\single_excercise_editor\\index.html')
   excerciseEditor.webContents.on('did-finish-load',()=>{
     excerciseEditor.webContents.send('excercise-to-edit',name)
   })

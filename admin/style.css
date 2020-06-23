@@ -46,25 +46,25 @@ html,body{
   z-index: 9;
 }
 
-.form-container {
+.formContainer {
   max-width: 200px;
   padding: 10px;
   background-color: white;
 }
 
-.form-container input{
+.formContainer input{
   width: 100%;
   margin: 5px 0 22px 0;
   border: none;
   background: #f1f1f1;
 }
 
-.form-container input:focus{
+.formContainer input:focus{
   background-color: #ddd;
   outline: none;
 }
 
-.form-container button {
+.formContainer button {
   background-color: #4CAF50;
   color: white;
   padding: 6px 10px;
@@ -75,11 +75,11 @@ html,body{
   opacity: 0.8;
 }
 
-.form-container .cancelBtn {
+.formContainer .cancelBtn {
   background-color: red;
 }
 
-.form-container .submitBtn:hover, .cancelBtn:hover {
+.formContainer .submitBtn:hover, .cancelBtn:hover {
   opacity: 1;
 }
 
@@ -121,7 +121,7 @@ html,body{
   overflow: hidden;
 }
 
-.dropdown .dropbtn {
+.dropdown .dropBtn {
   border: none;
   outline: none;
   color: #d63031;
@@ -131,11 +131,11 @@ html,body{
   margin: 0;
 }
 
-.dropdown:hover .dropbtn {
+.dropdown:hover .dropBtn {
   background-color: #74b9ff;
 }
 
-.dropdown-content {
+.dropdownContent {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
@@ -144,7 +144,7 @@ html,body{
   z-index: 1;
 }
 
-.dropdown-content p {
+.dropdownContent p {
   float: none;
   color: black;
   padding: 3px 6px;
@@ -154,11 +154,11 @@ html,body{
   margin: 5px;
 }
 
-.dropdown-content p:hover {
+.dropdownContent p:hover {
   background-color: #ddd;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdownContent {
   display: block;
 }
 
