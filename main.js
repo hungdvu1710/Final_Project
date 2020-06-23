@@ -73,6 +73,9 @@ function openExcerciseEditorWindow(name){
     modal: true  
   })
   excerciseEditor.loadFile('.\\single-excercise-editor\\index.html')
+  excerciseEditor.webContents.on('did-finish-load',()=>{
+    excerciseEditor.webContents.send('excercise-to-edit',name)
+  })
 }
 
 function openTestPageWindow(testInfo){ //testInfo includes the excercise and the username of the test taker
@@ -253,7 +256,11 @@ ipcMain.on('get-all-users',(event,args)=>{
   })
 })
 ipcMain.on('open-editor',(event,args)=>{
-  openExcerciseEditorWindow(args)
+  excerciseDb.findOne(args,(e,doc)=>{
+    console.log(doc)
+    openExcerciseEditorWindow(doc)
+  })
+  
 })
 
 ipcMain.on('add-new-excercise',(event,args)=>{
@@ -262,3 +269,5 @@ ipcMain.on('add-new-excercise',(event,args)=>{
   openExcerciseEditorWindow(newExcerciseName)
 })
 //#endregion
+
+//#region handle single excercise editor

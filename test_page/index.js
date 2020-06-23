@@ -1,4 +1,5 @@
-const { ipcRenderer,remote } = require("electron");
+const { ipcRenderer,remote } = require("electron")
+
 const questionTable = document.querySelector(".all-questions")
 const submitBtn = document.querySelector(".submit")
 submitBtn.addEventListener("click",getUserResponse)
@@ -14,14 +15,14 @@ const excercisesLoader = new Promise((resolve,reject)=>{
     setTimer(givenTime)
 
     questions.forEach((element)=>{
-      const{question, type, answers,rightanswer} = element
+      const{question, type, answers,accessibility} = element
   
       if(type === "single-choice"){
-        addSingleChoiceQuestion(question,answers)
+        addSingleChoiceQuestion(question,answers,accessibility)
       } else if(type === "T/F"){
-        addTFQuestion(question,answers)
+        addTFQuestion(question,answers,accessibility)
       } else{
-        addMultiChoiceQuestion(question,answers)
+        addMultiChoiceQuestion(question,answers,accessibility)
       }
     })
 
@@ -29,7 +30,11 @@ const excercisesLoader = new Promise((resolve,reject)=>{
   })
 })
 
-function addSingleChoiceQuestion(question,answers){
+function addSingleChoiceQuestion(question,answers,accessibility){
+  if(accessibility == "disabled"){
+    return
+  }
+  
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
     <th>Question: ${question}</th>
@@ -41,7 +46,11 @@ function addSingleChoiceQuestion(question,answers){
   })
 }
 
-function addMultiChoiceQuestion(question,answers){
+function addMultiChoiceQuestion(question,answers,accessibility){
+  if(accessibility == "disabled"){
+    return
+  }
+
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
     <th>Question: ${question}</th>
@@ -53,7 +62,11 @@ function addMultiChoiceQuestion(question,answers){
   })
 }
 
-function addTFQuestion(question,answers){
+function addTFQuestion(question,answers,accessibility){
+  if(accessibility == "disabled"){
+    return
+  }
+
   const questionRow = questionTable.insertRow(-1)
   questionRow.innerHTML =`
     <th>Question: ${question}</th>
