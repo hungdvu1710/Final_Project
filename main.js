@@ -270,3 +270,17 @@ ipcMain.on('add-new-excercise',(event,args)=>{
 //#endregion
 
 //#region handle single excercise editor
+ipcMain.on('update-excercise',(event,args)=>{
+  // console.log(args)
+  const {name} = args
+  excerciseDb.remove({name},{},(err,numRemoved)=>{
+    console.log(numRemoved)
+  })
+  excerciseDb.insert(args,(err,newDoc)=>{
+    const {name,questions,givenTime} = newDoc
+    const excerciseLength = questions.length
+    adminWin.webContents.send("update-excercise",{excerciseLength,name,givenTime})
+  })
+
+  event.sender.send("close-editor")
+})

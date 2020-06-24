@@ -7,17 +7,10 @@ const logOutBtn = document.querySelector("#logOut")
 const excerciseNameInput = document.querySelector(".excerciseName")
 const timeAllowedInput = document.querySelector(".timeAllowed")
 
-const invalidCharsInTime = ["-", "+", "e", "E"];
-const invalidCharsInExcerciseName = [";", ",", "#", "."];
+const invalidCharsInTime = ["-", "+", "e", "E"]
 
 timeAllowedInput.addEventListener("keydown", function (e) {
   if (invalidCharsInTime.includes(e.key)) {
-    e.preventDefault()
-  }
-})
-
-excerciseNameInput.addEventListener("keydown", function (e) {
-  if (invalidCharsInExcerciseName.includes(e.key)) {
     e.preventDefault()
   }
 })
@@ -37,9 +30,12 @@ ipcRenderer.on('all-excercises-response',(event,args) =>{
 ipcRenderer.on('all-users-response',(event,args)=>{
   appendUserRow(args)
 })
+ipcRenderer.on('update-excercise',(event,args)=>{
+  console.log(args)
+  updateRow(args)
+})
 
 function appendExcerciseRow(excercises){
-  console.log(excercises)
 
   excercises.forEach(excercise =>{
     const newRow = excerTable.insertRow(-1)
@@ -56,6 +52,8 @@ function appendExcerciseRow(excercises){
         <button class="excerciseRemoval" onclick="deleteTest('${name}')">Delete</button>
       </td> 
     `
+
+    newRow.setAttribute("class",name)
   })
 }
 
@@ -169,3 +167,22 @@ function handleLogOut(){
 ipcRenderer.on('close-admin-window',(event,args)=>{
   remote.getCurrentWindow().close()
 })
+
+function updateRow(excercise){
+  const {name,excerciseLength,givenTime} = excercise
+  const row = document.getElementsByClassName(name)[0]
+  
+  row.innerHTML =`
+    <td>${name}</td>
+    <td>${excerciseLength}</td>
+    <td>${givenTime}</td>
+    <td>
+      <button class="excerciseEditor" onclick="editTest('${name}')">Edit</button>
+    </td>
+    <td>
+      <button class="excerciseRemoval" onclick="deleteTest('${name}')">Delete</button>
+    </td> 
+  `
+
+  row.setAttribute("class",name)
+}
