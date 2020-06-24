@@ -170,7 +170,8 @@ ipcRenderer.on('close-admin-window',(event,args)=>{
 
 function updateRow(excercise){
   const {name,excerciseLength,givenTime} = excercise
-  const row = document.getElementsByClassName(`${name}`)[0]
+  const row = document.getElementsByClassName(name)[0]
+  
   row.innerHTML =`
     <td>${name}</td>
     <td>${excerciseLength}</td>
