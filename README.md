@@ -49,3 +49,5 @@ User Lists:
 
 # Suggestions on score calculation:
 - Get data from test_page then compare it with right answers from db
+# TODO:
+- Admin should handle duplicate excercise name (ask user if he wanted to delete old ones)

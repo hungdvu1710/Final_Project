@@ -13,6 +13,10 @@ timeAllowedInput.addEventListener("keydown", function (e) {
 })
 submitBtn.addEventListener("click",handleSubmit)
 
+ipcRenderer.on('close-editor',(event,args)=>{
+  remote.getCurrentWindow().close()
+})
+
 const excerciseLoader = new Promise((resolve,reject)=>{
   ipcRenderer.on('excercise-to-edit',(event,args)=>{
     const {questions,name,givenTime} = args
@@ -49,19 +53,20 @@ function addSingleChoiceQuestion(question,answers,rightanswer,_questionId,type,a
   questionRow.setAttribute("class","questionRow")
 
   const answerRow = questionTable.insertRow(-1)
-  answerRow.setAttribute("class","answerRow")
+  answerRow.setAttribute("class","radio")
   answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
+  answerRow.setAttribute("id",_questionId)
   
   answers.forEach(answer =>{
     addSingleAnswer(answer,answerRow,"radio",rightanswer,_questionId)
   })
 
-  const addQuestionBtn = document.createElement("button")
-  addQuestionBtn.setAttribute("class","addAnswer")
-  addQuestionBtn.innerText = "Add"
-  addQuestionBtn.addEventListener("click",addAnswer)
+  const addAnswerBtn = document.createElement("button")
+  addAnswerBtn.setAttribute("class","addAnswer")
+  addAnswerBtn.innerText = "Add"
+  addAnswerBtn.addEventListener("click",addAnswer)
 
-  answerRow.appendChild(addQuestionBtn)
+  answerRow.appendChild(addAnswerBtn)
 }
 
 function addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility){
@@ -76,19 +81,20 @@ function addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,ac
   questionRow.setAttribute("class","questionRow")
 
   const answerRow = questionTable.insertRow(-1)
-  answerRow.setAttribute("class","answerRow")
+  answerRow.setAttribute("class","checkbox")
+  answerRow.setAttribute("id",_questionId)
   answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
 
   answers.forEach(answer =>{
     addSingleAnswer(answer,answerRow,"checkbox",rightanswer,_questionId)
   })
 
-  const addQuestionBtn = document.createElement("button")
-  addQuestionBtn.setAttribute("class","addAnswer")
-  addQuestionBtn.innerText = "Add"
-  addQuestionBtn.addEventListener("click",addAnswer)
+  const addAnswerBtn = document.createElement("button")
+  addAnswerBtn.setAttribute("class","addAnswer")
+  addAnswerBtn.innerText = "Add"
+  addAnswerBtn.addEventListener("click",addAnswer)
 
-  answerRow.appendChild(addQuestionBtn)
+  answerRow.appendChild(addAnswerBtn)
 }
 
 function addTFQuestion(question,answers,rightanswer,_questionId,type,accessibility){
@@ -105,19 +111,20 @@ function addTFQuestion(question,answers,rightanswer,_questionId,type,accessibili
   questionRow.setAttribute("class","questionRow")
 
   const answerRow = questionTable.insertRow(-1)
-  answerRow.setAttribute("class","answerRow")
+  answerRow.setAttribute("class","radio")
   answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
+  answerRow.setAttribute("id",_questionId)
 
   answers.forEach(answer =>{
     addSingleAnswer(answer,answerRow,"radio",rightanswer,_questionId)
   })
 
-  const addQuestionBtn = document.createElement("button")
-  addQuestionBtn.setAttribute("class","addAnswer")
-  addQuestionBtn.innerText = "Add"
-  addQuestionBtn.addEventListener("click",addAnswer)
+  const addAnswerBtn = document.createElement("button")
+  addAnswerBtn.setAttribute("class","addAnswer")
+  addAnswerBtn.innerText = "Add"
+  addAnswerBtn.addEventListener("click",addAnswer)
 
-  answerRow.appendChild(addQuestionBtn)
+  answerRow.appendChild(addAnswerBtn)
 }
 
 function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
@@ -128,6 +135,7 @@ function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
   choice.setAttribute("type",type)
   choice.setAttribute("class",`${_questionId}Choice`)
   choice.setAttribute("value",answer)
+  choice.setAttribute("name",_questionId)
 
   if(rightanswer.includes(answer)){
     choice.setAttribute("checked",true)
@@ -136,6 +144,8 @@ function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
   const answerInput = document.createElement("input")
   answerInput.setAttribute("value",answer)
   answerInput.setAttribute("class",`${_questionId}Answer`)
+
+  answerInput.addEventListener("input",updateChoiceValue)
 
   const deleteAnswerBtn = document.createElement("button")
   deleteAnswerBtn.setAttribute("class","deleteAnswer")
@@ -176,9 +186,46 @@ function addAccessibilityController(_questionId,accessibility){
   return accessibilityController
 }
 
+function deleteAnswer(){
+  this.parentNode.remove()
+}
+
+function addAnswer(){
+  const questionId = this.parentNode.id
+  const type = this.parentNode.className
+
+  const answerWrapper = document.createElement("div")
+  answerWrapper.setAttribute("class",`${questionId}answerWrapper`)
+
+  const choice = document.createElement('input')
+  choice.setAttribute("type",type)
+  choice.setAttribute("class",`${questionId}Choice`)
+  choice.setAttribute("name",questionId)
+
+  const answerInput = document.createElement("input")
+  answerInput.setAttribute("class",`${questionId}Answer`)
+  answerInput.addEventListener("input",updateChoiceValue)
+
+  const deleteAnswerBtn = document.createElement("button")
+  deleteAnswerBtn.setAttribute("class","deleteAnswer")
+  deleteAnswerBtn.innerText = "Delete"
+  deleteAnswerBtn.addEventListener("click",deleteAnswer)
+
+  answerWrapper.appendChild(choice)
+  answerWrapper.appendChild(answerInput)
+  answerWrapper.appendChild(deleteAnswerBtn)
+
+  this.parentNode.insertBefore(answerWrapper,this.parentNode.lastChild)
+}
+
+function updateChoiceValue(){
+  this.parentNode.firstChild.value = this.value
+}
+
 function handleSubmit(){
   const name = document.querySelector(".title").innerText
   const timeAllowed = document.querySelector(".timeAllowed").value
+
   Promise.all([
     getQuestionContentChanges(),
     getQuestionAccessibilityChanges(),
@@ -214,7 +261,7 @@ function handleSubmit(){
       }
 
     })
-    console.log(questions)
+    
     ipcRenderer.send("update-excercise",{name,givenTime:timeAllowed,questions})
   })
   
@@ -298,10 +345,6 @@ async function getQuestionAccessibilityChanges(){
   return newAccessibilitySet
 }
 
-function deleteAnswer(){
-  this.parentNode.remove()
-}
-
-function addAnswer(){
-
+function addQuestion(){
+  const questionId = `i${Date.now()}`
 }
