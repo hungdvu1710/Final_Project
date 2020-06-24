@@ -7,17 +7,10 @@ const logOutBtn = document.querySelector("#logOut")
 const excerciseNameInput = document.querySelector(".excerciseName")
 const timeAllowedInput = document.querySelector(".timeAllowed")
 
-const invalidCharsInTime = ["-", "+", "e", "E"];
-const invalidCharsInExcerciseName = [";", ",", "#", "."];
+const invalidCharsInTime = ["-", "+", "e", "E"]
 
 timeAllowedInput.addEventListener("keydown", function (e) {
   if (invalidCharsInTime.includes(e.key)) {
-    e.preventDefault()
-  }
-})
-
-excerciseNameInput.addEventListener("keydown", function (e) {
-  if (invalidCharsInExcerciseName.includes(e.key)) {
     e.preventDefault()
   }
 })

@@ -270,3 +270,11 @@ ipcMain.on('add-new-excercise',(event,args)=>{
 //#endregion
 
 //#region handle single excercise editor
+ipcMain.on('update-excercise',(event,args)=>{
+  // console.log(args)
+  const {name} = args
+  excerciseDb.remove({name},{},(err,numRemoved)=>{
+    console.log(numRemoved)
+  })
+  excerciseDb.insert(args)
+})
