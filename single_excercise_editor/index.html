@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
@@ -23,8 +24,17 @@
       <table class="all-questions"></table>
     </div>
     
-    <div class=".questionAdder">
-      <button>Add question </button>
+    <div class="questionAdder">
+      <div class="selectdiv">
+        <label for="TypeSelector">Choose a type</label>
+        <select name="TypeSelector" class="TypeSelector">
+          <option value="T/F">T/F</option>
+          <option value="single-choice">Single choice</option>
+          <option value="multi-choice">Multi Choice</option>
+        </select>
+      </div>
+
+      <button type="button" class="questionCreator">Add question </button>
     </div>
 
     <div>
