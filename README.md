@@ -49,9 +49,6 @@ User Lists:
 
 # Suggestions on score calculation:
 - Get data from test_page then compare it with right answers from db
-# TODO:
-- Admin should handle duplicate excercise name (ask user if he wanted to delete old ones)
-
 # Single question structure:
 - type
 - _questionId
@@ -59,3 +56,6 @@ User Lists:
 - answers
 - rightanswer
 - question
+# TODO:
+- Update user data in admin page after deleting an excercise
+- Disable test with no question and question with no answer in test page

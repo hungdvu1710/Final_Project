@@ -17,12 +17,6 @@ timeAllowedInput.addEventListener("keydown", function (e) {
 })
 submitBtn.addEventListener("click",handleSubmit)
 
-dialog.showMessageBox({
-  type: "info",
-  title: "Instructions",
-  message: "This is your excercise editor, you can update amount of time allowed for the test, and the questions' properties. Remember to add answers and pick at least 1 rightanswer for each question, or else your question won't show on the test taker window"
-})
-
 ipcRenderer.on('close-editor',(event,args)=>{
   remote.getCurrentWindow().close()
 })
@@ -30,21 +24,25 @@ ipcRenderer.on('close-editor',(event,args)=>{
 const excerciseLoader = new Promise((resolve,reject)=>{
   ipcRenderer.on('excercise-to-edit',(event,args)=>{
     const {questions,name,givenTime} = args
+    console.log(args)
 
     document.querySelector(".title").innerText = name
     timeAllowedInput.value = givenTime
 
-    questions.forEach((element)=>{
-      const{question, type, answers,rightanswer,_questionId,accessibility} = element
+    if(questions.length > 0){
 
-      if(type === "single-choice"){
-        addSingleChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility)
-      } else if(type === "T/F"){
-        addTFQuestion(question,answers,rightanswer,_questionId,type,accessibility)
-      } else{
-        addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility)
-      }
-    })
+      questions.forEach((element)=>{
+        const{question, type, answers,rightanswer,_questionId,accessibility} = element
+  
+        if(type === "single-choice"){
+          addSingleChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility)
+        } else if(type === "T/F"){
+          addTFQuestion(question,answers,rightanswer,_questionId,type,accessibility)
+        } else{
+          addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility)
+        }
+      })
+    }
 
     resolve({questions,name})
   })

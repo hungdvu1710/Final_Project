@@ -27,12 +27,22 @@ ipcRenderer.send('get-all-users')
 ipcRenderer.on('all-excercises-response',(event,args) =>{
   appendExcerciseRow(args)
 })
+
 ipcRenderer.on('all-users-response',(event,args)=>{
   appendUserRow(args)
 })
+
 ipcRenderer.on('update-excercise',(event,args)=>{
   console.log(args)
-  updateRow(args)
+  const {name} = args
+  if(document.getElementsByClassName(name).length === 0){
+    const newRow = excerTable.insertRow(-1)
+    const {name,excerciseLength,givenTime} = args
+    
+    setSingleExcerciseRow(newRow,name,excerciseLength,givenTime)
+  } else{
+    updateRow(args)
+  }
 })
 
 function appendExcerciseRow(excercises){
@@ -41,19 +51,7 @@ function appendExcerciseRow(excercises){
     const newRow = excerTable.insertRow(-1)
     const {name,excerciseLength,givenTime} = excercise
     
-    newRow.innerHTML =`
-      <td>${name}</td>
-      <td>${excerciseLength}</td>
-      <td>${givenTime}</td>
-      <td>
-        <button class="excerciseEditor" onclick="editTest('${name}')">Edit</button>
-      </td>
-      <td>
-        <button class="excerciseRemoval" onclick="deleteTest('${name}')">Delete</button>
-      </td> 
-    `
-
-    newRow.setAttribute("class",name)
+    setSingleExcerciseRow(newRow,name,excerciseLength,givenTime)
   })
 }
 
@@ -138,6 +136,20 @@ function submitNewExcercise(){
     return
   }
 
+  if(!isNameDuplicate(newExcerciseName)){
+    dialog.showMessageBox({
+      type: "warning",
+      message: `${newExcerciseName} already exists. Do you want to replace it?`,
+      buttons: ["Yes","No"]
+    }).then(result => {
+      const {response} = result
+      if(response == 0){
+        ipcRenderer.send('replace-excercise',{newExcerciseName,timeAllowed})
+      }
+    })
+    return
+  }
+
   ipcRenderer.send('add-new-excercise',{newExcerciseName,timeAllowed})
   closeForm()
 }
@@ -148,16 +160,25 @@ function closeForm() {
   excerciseNameInput.value = ""
 }
 
-function editTest(name){
+function editTest(){
+  const name = this.parentNode.parentNode.className
   ipcRenderer.send('open-editor',{name})
 }
 
 function isNameValid(name){
   if (typeof name === "string" && name.trim() != "") {
-    return true;
+    return true
   }
 
-  return false;
+  return false
+}
+
+function isNameDuplicate(name){
+  const allCurrentExcercises = Array.from(document.querySelectorAll(".allExcercises tr")).slice(1).map(excercise => excercise.className)
+  if(allCurrentExcercises.includes(name)){
+    return false
+  }
+  return true
 }
 
 function handleLogOut(){
@@ -171,18 +192,46 @@ ipcRenderer.on('close-admin-window',(event,args)=>{
 function updateRow(excercise){
   const {name,excerciseLength,givenTime} = excercise
   const row = document.getElementsByClassName(name)[0]
-  
-  row.innerHTML =`
-    <td>${name}</td>
-    <td>${excerciseLength}</td>
-    <td>${givenTime}</td>
-    <td>
-      <button class="excerciseEditor" onclick="editTest('${name}')">Edit</button>
-    </td>
-    <td>
-      <button class="excerciseRemoval" onclick="deleteTest('${name}')">Delete</button>
-    </td> 
-  `
+  row.innerHTML =""
+
+  setSingleExcerciseRow(row,name,excerciseLength,givenTime)
+}
+
+function deleteTest(){
+  const name = this.parentNode.parentNode.className
+  ipcRenderer.send('delete-test',name)
+  this.parentNode.parentNode.remove()
+}
+
+function setSingleExcerciseRow(row,name,excerciseLength,givenTime){
+  const nameCell = document.createElement("td")
+  nameCell.innerText = name
+
+  const excerciseLengthCell = document.createElement("td")
+  excerciseLengthCell.innerText = excerciseLength
+
+  const givenTimeCell = document.createElement("td")
+  givenTimeCell.innerText = givenTime
+
+  const editBtnCell = document.createElement("td")
+  const editBtn = document.createElement("button")
+  editBtn.setAttribute("class","excerciseEditor")
+  editBtnCell.appendChild(editBtn)
+  editBtn.innerText = "Edit"
+  editBtn.addEventListener("click",editTest)
+
+  const deleteBtnCell = document.createElement("td")
+  const deleteBtn = document.createElement("button")
+  deleteBtn.setAttribute("class","excerciseRemoval")
+  deleteBtnCell.appendChild(deleteBtn)
+  deleteBtn.innerText = "Delete"
+  deleteBtn.addEventListener("click",deleteTest)
+
+  row.appendChild(nameCell)
+  row.appendChild(excerciseLengthCell)
+  row.appendChild(givenTimeCell)
+  row.appendChild(editBtnCell)
+  row.appendChild(deleteBtnCell)
 
   row.setAttribute("class",name)
 }
