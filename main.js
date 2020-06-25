@@ -145,20 +145,42 @@ ipcMain.on('sign-up-req', (event,args) =>{
 })
 //#endregion
 
-// Excercise GET request used for both admin and excercise-selector
-ipcMain.on('get-all-excercises',(event,args)=>{
+//#region handle excercise selector window
+
+function getExcerciseLengthForClient(questions){
+  let excerciseLength = questions.length
+
+  if(questions.length > 0){
+
+    questions.forEach(question=>{
+      const {rightanswer,answers,accessibility} = question
+
+      if(rightanswer.length == 0 || answers.length == 0 || accessibility == "disabled"){
+        excerciseLength--
+      }
+    })
+  }
+
+  return excerciseLength
+}
+
+ipcMain.on('get-all-excercises-client',(event,args)=>{
   let allExcercises = []
   excerciseDb.find({}, (err, docs) => {
+
     docs.forEach(element => {
       const {name,questions,givenTime} = element
-      const excerciseLength = questions.length
-      allExcercises.push({name,excerciseLength,givenTime})
+      const excerciseLength = getExcerciseLengthForClient(questions)      
+
+      if(excerciseLength != 0){
+        allExcercises.push({name,excerciseLength,givenTime})
+      }
+
     });
     event.sender.send('all-excercises-response',allExcercises)
   })
 })
 
-//#region handle excercise selector window
 ipcMain.on('req-single-excercise',(event,args)=>{
   const {username,excercise} = args
   excerciseDb.findOne({name: excercise}, (err,doc)=>{
@@ -208,7 +230,9 @@ ipcMain.on('user-responses',(event,args)=>{
     for(let i=0; i<questions.length; i++){
       const {rightanswer} = questions[i]
       const {responses} = responseSet[i]
-
+      if(rightanswer.length == 0){
+        continue
+      }
       if(arraysEqual(rightanswer,responses)){
         score++
       }
@@ -216,7 +240,7 @@ ipcMain.on('user-responses',(event,args)=>{
 
     dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
       title: "Score",
-      message: `You've earned yourself the score of ${score}/${questions.length}`
+      message: `You've earned yourself the score of ${score}/${getExcerciseLengthForClient(questions)}`
     }).then(()=>{
       openExcerciseSelectorWindow("Hoho") //hard fixed
       event.sender.send('close-test-page')
@@ -249,16 +273,32 @@ ipcMain.on('user-responses',(event,args)=>{
 //#endregion
 
 //#region handle admin window
+ipcMain.on('get-all-excercises',(event,args)=>{
+  let allExcercises = []
+  excerciseDb.find({}, (err, docs) => {
+
+    docs.forEach(element => {
+      const {name,questions,givenTime} = element
+      const excerciseLength = questions.length
+
+      allExcercises.push({name,excerciseLength,givenTime})
+    });
+    event.sender.send('all-excercises-response',allExcercises)
+  })
+})
+
 ipcMain.on('admin-log-out-req',(event,args)=>{
   createLogInWindow()
   event.sender.send('close-admin-window')
 })
+
 ipcMain.on('get-all-users',(event,args)=>{
   let allUsers = []
   credentialDb.find({}, (err, docs) => {
     event.sender.send('all-users-response',docs)
   })
 })
+
 ipcMain.on('open-editor',(event,args)=>{
   excerciseDb.findOne(args,(e,doc)=>{
     console.log(doc)

@@ -12,7 +12,7 @@ const userLoggedIn = new Promise((resolve,reject)=>{
   })
 })
 
-ipcRenderer.send('get-all-excercises')
+ipcRenderer.send('get-all-excercises-client')
 getUserRecord()
 
 ipcRenderer.on('all-excercises-response',(event,args) =>{
