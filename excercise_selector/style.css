@@ -18,6 +18,7 @@ html,body{
 .logOut:hover {
   background-color: RoyalBlue;
 }
+
 .pageContainer{
   width: 65%;
   display: flex;
@@ -76,17 +77,20 @@ th {
   font-family: 'Balsamiq Sans', cursive;
   text-align: center;
 }
+
 td {
   color: #333;
   border-bottom: solid #636e72;
   border-width: thin;
   font-family: 'Source Sans Pro', sans-serif;
 }
+
 h3{
   font-family: 'MuseoModerno', cursive;
   margin-top:10px;
   margin-bottom: 15px;
 }
+
 .excerciseChoice{
   color: #494949 !important;
   text-transform: uppercase;
