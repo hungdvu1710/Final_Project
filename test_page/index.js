@@ -15,14 +15,14 @@ const excercisesLoader = new Promise((resolve,reject)=>{
     setTimer(givenTime)
 
     questions.forEach((element)=>{
-      const{question, type, answers,accessibility} = element
+      const{question, type, answers,accessibility,rightanswer,_questionId} = element
   
       if(type === "single-choice"){
-        addSingleChoiceQuestion(question,answers,accessibility)
+        addSingleChoiceQuestion(question,answers,accessibility,rightanswer,_questionId)
       } else if(type === "T/F"){
-        addTFQuestion(question,answers,accessibility)
+        addTFQuestion(question,answers,accessibility,rightanswer,_questionId)
       } else{
-        addMultiChoiceQuestion(question,answers,accessibility)
+        addMultiChoiceQuestion(question,answers,accessibility,rightanswer,_questionId)
       }
     })
 
@@ -30,8 +30,12 @@ const excercisesLoader = new Promise((resolve,reject)=>{
   })
 })
 
-function addSingleChoiceQuestion(question,answers,accessibility){
+function addSingleChoiceQuestion(question,answers,accessibility,rightanswer,_questionId){
   if(accessibility == "disabled"){
+    return
+  }
+
+  if(answers.length == 0 || rightanswer.length == 0){
     return
   }
 
@@ -42,12 +46,16 @@ function addSingleChoiceQuestion(question,answers,accessibility){
   const answerRow = questionTable.insertRow(-1)
   
   answers.forEach(answer =>{
-    addSingleAnswer(answer,question,answerRow,"radio")
+    addSingleAnswer(answer,question,answerRow,"radio",_questionId)
   })
 }
 
-function addMultiChoiceQuestion(question,answers,accessibility){
+function addMultiChoiceQuestion(question,answers,accessibility,rightanswer,_questionId){
   if(accessibility == "disabled"){
+    return
+  }
+
+  if(answers.length == 0 || rightanswer.length == 0){
     return
   }
 
@@ -58,12 +66,16 @@ function addMultiChoiceQuestion(question,answers,accessibility){
   const answerRow = questionTable.insertRow(-1)
 
   answers.forEach(answer =>{
-    addSingleAnswer(answer,question,answerRow,"checkbox")
+    addSingleAnswer(answer,question,answerRow,"checkbox",_questionId)
   })
 }
 
-function addTFQuestion(question,answers,accessibility){
+function addTFQuestion(question,answers,accessibility,rightanswer,_questionId){
   if(accessibility == "disabled"){
+    return
+  }
+
+  if(answers.length == 0 || rightanswer.length == 0){
     return
   }
 
@@ -74,17 +86,16 @@ function addTFQuestion(question,answers,accessibility){
   const answerRow = questionTable.insertRow(-1)
 
   answers.forEach(answer =>{
-    addSingleAnswer(answer,question,answerRow,"radio")
+    addSingleAnswer(answer,question,answerRow,"radio",_questionId)
   })
 }
 
-function addSingleAnswer(answer,question,answerRow,type){
+function addSingleAnswer(answer,question,answerRow,type,_questionId){
   const answerWrapper = document.createElement("div")
-  const questionShortenName = question.replace(/\s+/g, " ").split(" ").join("")
 
   const choice = document.createElement('input')
   choice.setAttribute("type",type)
-  choice.setAttribute("class",questionShortenName)
+  choice.setAttribute("class",_questionId)
   choice.setAttribute("value",answer)
   choice.setAttribute("name",question)
 
@@ -102,11 +113,10 @@ async function getUserResponse(){
   let responseSet = []
 
   questions.forEach((element)=>{
-    const {question} = element
-    const questionShortenName = question.replace(/\s+/g, " ").split(" ").join("")
+    const {question,_questionId} = element
     let responses = []
 
-    document.querySelectorAll(`.${questionShortenName}:checked`).forEach(e => {
+    document.querySelectorAll(`.${_questionId}:checked`).forEach(e => {
       responses.push(e.value)
     })
 
