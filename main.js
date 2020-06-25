@@ -59,10 +59,10 @@ function openAdminWindow(){
   })
 
   adminWin.loadFile('.\\admin\\index.html')
-  // adminWin.webContents.openDevTools()
+  adminWin.webContents.openDevTools()
 }
 
-function openExcerciseEditorWindow(name){
+function openExcerciseEditorWindow(excercise){
   const excerciseEditor = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true
@@ -71,9 +71,16 @@ function openExcerciseEditorWindow(name){
     modal: true  
   })
   excerciseEditor.loadFile('.\\single_excercise_editor\\index.html')
+
   excerciseEditor.webContents.on('did-finish-load',()=>{
-    excerciseEditor.webContents.send('excercise-to-edit',name)
+    excerciseEditor.webContents.send('excercise-to-edit',excercise)
+    dialog.showMessageBox(excerciseEditor,{
+      type: "info",
+      title: "Instructions",
+      message: "This is your excercise editor, you can update amount of time allowed for the test, and the questions' properties. Remember to add answers and pick at least 1 rightanswer for each question, or else your question won't show on the test taker window"
+    })
   })
+
   excerciseEditor.webContents.openDevTools()
 }
 
@@ -217,12 +224,10 @@ ipcMain.on('user-responses',(event,args)=>{
     
     credentialDb.findOne({username},(e,doc)=>{
       const {record} = doc
-      console.log(record)
       const oldResult = record.filter(element=>element.excercise === name)
       
       if(oldResult[0]){
         
-        console.log(oldResult)
 
         credentialDb.update({username},{$pull: {record: oldResult[0]}},{},(e,numReplaced)=>{
           console.log(numReplaced)
@@ -264,8 +269,52 @@ ipcMain.on('open-editor',(event,args)=>{
 
 ipcMain.on('add-new-excercise',(event,args)=>{
   const {newExcerciseName,timeAllowed} = args
-  excerciseDb.insert({name:newExcerciseName,givenTime:timeAllowed,questions:[]})
-  openExcerciseEditorWindow(newExcerciseName)
+
+  excerciseDb.insert({name:newExcerciseName,givenTime:timeAllowed,questions:[]},(err,doc)=>{
+    openExcerciseEditorWindow(doc)
+  })
+
+})
+
+ipcMain.on('replace-excercise',(event,args)=>{
+  const {newExcerciseName,timeAllowed} = args
+
+  excerciseDb.remove({name:newExcerciseName},{},(err,numRemoved)=>{
+    excerciseDb.insert({name:newExcerciseName,givenTime:timeAllowed,questions:[]},(err,doc)=>{
+      openExcerciseEditorWindow(doc)
+    })
+  })
+  
+})
+
+ipcMain.on('delete-test',(event,args)=>{
+
+  credentialDb.find({},(e,docs)=>{
+
+    docs.forEach(doc=>{
+      const {record,username} = doc
+
+      if(username === "admin"){
+        return
+      }
+
+      console.log(record)
+      const oldResult = record.filter(element=>element.excercise === args)
+      
+      if(oldResult[0]){
+        
+        console.log(oldResult)
+
+        credentialDb.update({username},{$pull: {record: oldResult[0]}},{},(e,numReplaced)=>{
+          console.log(numReplaced)
+        })
+      } 
+    })
+  })
+
+  excerciseDb.remove({name:args},{},(err,numRemoved)=>{
+    console.log(numRemoved)
+  })
 })
 //#endregion
 
@@ -273,9 +322,11 @@ ipcMain.on('add-new-excercise',(event,args)=>{
 ipcMain.on('update-excercise',(event,args)=>{
   // console.log(args)
   const {name} = args
+
   excerciseDb.remove({name},{},(err,numRemoved)=>{
     console.log(numRemoved)
   })
+
   excerciseDb.insert(args,(err,newDoc)=>{
     const {name,questions,givenTime} = newDoc
     const excerciseLength = questions.length
