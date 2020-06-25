@@ -337,9 +337,9 @@ async function getQuestionAccessibilityChanges(){
 
   questions.forEach((element)=>{
     const {_questionId} = element
-    const accesibility = document.querySelector(`.${_questionId}Accessibility`).value
+    const accessibility = document.querySelector(`.${_questionId}Accessibility`).value
 
-    newAccessibilitySet.push({_questionId, accesibility})
+    newAccessibilitySet.push({_questionId, accessibility})
   })
 
   return newAccessibilitySet
