@@ -1,9 +1,13 @@
 const { ipcRenderer, remote } = require("electron")
+const {dialog} = remote
 
 const questionTable = document.querySelector(".all-questions")
 const submitBtn = document.querySelector(".submit")
 const timeAllowedInput = document.querySelector(".timeAllowed")
+const typeSelector = document.querySelector(".TypeSelector")
+let newQuestionSet = []
 
+document.querySelector(".questionCreator").addEventListener("click",addQuestion)
 const invalidCharsInTime = ["-", "+", "e", "E"]
 
 timeAllowedInput.addEventListener("keydown", function (e) {
@@ -12,6 +16,12 @@ timeAllowedInput.addEventListener("keydown", function (e) {
   }
 })
 submitBtn.addEventListener("click",handleSubmit)
+
+dialog.showMessageBox({
+  type: "info",
+  title: "Instructions",
+  message: "This is your excercise editor, you can update amount of time allowed for the test, and the questions' properties. Remember to add answers and pick at least 1 rightanswer for each question, or else your question won't show on the test taker window"
+})
 
 ipcRenderer.on('close-editor',(event,args)=>{
   remote.getCurrentWindow().close()
@@ -116,15 +126,35 @@ function addTFQuestion(question,answers,rightanswer,_questionId,type,accessibili
   answerRow.setAttribute("id",_questionId)
 
   answers.forEach(answer =>{
-    addSingleAnswer(answer,answerRow,"radio",rightanswer,_questionId)
+    addTFAnswer(answer,answerRow,rightanswer,_questionId)
   })
 
-  const addAnswerBtn = document.createElement("button")
-  addAnswerBtn.setAttribute("class","addAnswer")
-  addAnswerBtn.innerText = "Add"
-  addAnswerBtn.addEventListener("click",addAnswer)
+}
 
-  answerRow.appendChild(addAnswerBtn)
+function addTFAnswer(answer,answerRow,rightanswer,_questionId){
+  const answerWrapper = document.createElement("div")
+  answerWrapper.setAttribute("class",`${_questionId}answerWrapper`)
+
+  const choice = document.createElement('input')
+  choice.setAttribute("type","radio")
+  choice.setAttribute("class",`${_questionId}Choice`)
+  choice.setAttribute("value",answer)
+  choice.setAttribute("name",_questionId)
+
+  if(rightanswer.includes(answer)){
+    choice.setAttribute("checked",true)
+  }
+
+  const answerInput = document.createElement("input")
+  answerInput.setAttribute("value",answer)
+  answerInput.setAttribute("class",`${_questionId}Answer`)
+
+  answerInput.addEventListener("input",updateChoiceValue)
+
+  answerWrapper.appendChild(choice)
+  answerWrapper.appendChild(answerInput)
+
+  answerRow.appendChild(answerWrapper)
 }
 
 function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
@@ -155,6 +185,7 @@ function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
   answerWrapper.appendChild(choice)
   answerWrapper.appendChild(answerInput)
   answerWrapper.appendChild(deleteAnswerBtn)
+
   answerRow.appendChild(answerWrapper)
 }
 
@@ -269,9 +300,10 @@ function handleSubmit(){
 
 async function getAllRightAnswers(){
   const {questions} = await excerciseLoader
+  const allCurrentQuestions = newQuestionSet.concat(questions)
   let rightanswerSet = []
 
-  questions.forEach((element)=>{
+  allCurrentQuestions.forEach((element)=>{
     const {_questionId} = element
     let rightanswer = []
 
@@ -287,23 +319,25 @@ async function getAllRightAnswers(){
 
 async function getQuestionContentChanges(){
   const {questions} = await excerciseLoader
-  let newQuestionSet = []
+  const allCurrentQuestions = newQuestionSet.concat(questions)
+  let newQuestionContent = []
 
-  questions.forEach((element)=>{
+  allCurrentQuestions.forEach((element)=>{
     const {_questionId} = element
     const question = document.querySelector(`#${_questionId}QuestionContent`).value
     
-    newQuestionSet.push({_questionId, question})
+    newQuestionContent.push({_questionId, question})
   })
 
-  return newQuestionSet
+  return newQuestionContent
 }
 
 async function getAnswerChanges(){
   const {questions} = await excerciseLoader
+  const allCurrentQuestions = newQuestionSet.concat(questions)
   let newAnswerSet = []
 
-  questions.forEach((element)=>{
+  allCurrentQuestions.forEach((element)=>{
     const {_questionId} = element
     let answers = []
 
@@ -319,9 +353,10 @@ async function getAnswerChanges(){
 
 async function getQuestionType(){
   const {questions} = await excerciseLoader
+  const allCurrentQuestions = newQuestionSet.concat(questions)
   let TypeSet = []
 
-  questions.forEach((element)=>{
+  allCurrentQuestions.forEach((element)=>{
     const {_questionId} = element
     const type = document.querySelector(`.${_questionId}Type`).innerText
 
@@ -333,18 +368,105 @@ async function getQuestionType(){
 
 async function getQuestionAccessibilityChanges(){
   const {questions} = await excerciseLoader
+  const allCurrentQuestions = newQuestionSet.concat(questions)
   let newAccessibilitySet = []
 
-  questions.forEach((element)=>{
+  allCurrentQuestions.forEach((element)=>{
     const {_questionId} = element
-    const accesibility = document.querySelector(`.${_questionId}Accessibility`).value
+    const accessibility = document.querySelector(`.${_questionId}Accessibility`).value
 
-    newAccessibilitySet.push({_questionId, accesibility})
+    newAccessibilitySet.push({_questionId, accessibility})
   })
 
   return newAccessibilitySet
 }
 
 function addQuestion(){
-  const questionId = `i${Date.now()}`
+  const _questionId = `i${Date.now()}`
+  const type = typeSelector.value
+  const newQuestion = {_questionId,type,question: "",rightanswer:[],accessibility:"disabled"}
+
+  const questionRow = questionTable.insertRow(-1)
+  questionRow.innerHTML =`
+    <th>
+      <label for="question">Question: </label>
+      <input type="text" name="question" class="question" id="${_questionId}QuestionContent">
+      <p class="${_questionId}Type">${type}</p>
+    </th>
+  `
+  questionRow.setAttribute("class","questionRow")
+
+  const answerRow = questionTable.insertRow(-1)
+  answerRow.appendChild(addAccessibilityController(_questionId,"disabled"))
+  answerRow.setAttribute("id",_questionId)
+
+  if(type == "single-choice"){
+    answerRow.setAttribute("class","radio")
+
+    const addAnswerBtn = document.createElement("button")
+    addAnswerBtn.setAttribute("class","addAnswer")
+    addAnswerBtn.innerText = "Add"
+    addAnswerBtn.addEventListener("click",addAnswer)
+
+    answerRow.appendChild(addAnswerBtn)
+
+    newQuestion.answers = []
+  } else if(type == "multi-choice"){
+    answerRow.setAttribute("class","checkbox")
+
+    const addAnswerBtn = document.createElement("button")
+    addAnswerBtn.setAttribute("class","addAnswer")
+    addAnswerBtn.innerText = "Add"
+    addAnswerBtn.addEventListener("click",addAnswer)
+
+    answerRow.appendChild(addAnswerBtn)
+
+    newQuestion.answers = []
+  } else{
+    //T/F question will only have 2 option
+    answerRow.setAttribute("class","radio")
+
+    const firstAnswerWrapper = document.createElement("div")
+    firstAnswerWrapper.setAttribute("class",`${_questionId}answerWrapper`)
+
+    const secondAnswerWrapper = document.createElement("div")
+    secondAnswerWrapper.setAttribute("class",`${_questionId}answerWrapper`)
+
+    const firstChoice = document.createElement('input')
+    firstChoice.setAttribute("type","radio")
+    firstChoice.setAttribute("class",`${_questionId}Choice`)
+    firstChoice.setAttribute("value","T")
+    firstChoice.setAttribute("name",_questionId)
+
+    const firstChoiceContent = document.createElement("input")
+    firstChoiceContent.setAttribute("value","T")
+    firstChoiceContent.setAttribute("class",`${_questionId}Answer`)
+
+    firstChoiceContent.addEventListener("input",updateChoiceValue)
+
+    const secondChoice = document.createElement('input')
+    secondChoice.setAttribute("type","radio")
+    secondChoice.setAttribute("class",`${_questionId}Choice`)
+    secondChoice.setAttribute("value","T")
+    secondChoice.setAttribute("name",_questionId)
+
+    const secondChoiceContent = document.createElement("input")
+    secondChoiceContent.setAttribute("value","F")
+    secondChoiceContent.setAttribute("class",`${_questionId}Answer`)
+
+    secondChoiceContent.addEventListener("input",updateChoiceValue)
+
+    firstAnswerWrapper.appendChild(firstChoice)
+    firstAnswerWrapper.appendChild(firstChoiceContent)
+
+    secondAnswerWrapper.appendChild(secondChoice)
+    secondAnswerWrapper.appendChild(secondChoiceContent)
+
+    answerRow.appendChild(firstAnswerWrapper)
+    answerRow.appendChild(secondAnswerWrapper)
+
+    newQuestion.answers = ["T","F"]
+  }
+
+  newQuestionSet.push(newQuestion)
 }
