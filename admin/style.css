@@ -1,9 +1,13 @@
 html,body{
-  background: linear-gradient(to right, rgba(36,36,0,1) , rgba(177,56,158,1) , rgba(0,212,255,1) );
+  background-image: url(admin_background.jpg);
 }
 
 .logOutWrapper{
   float: left;
+}
+
+button:hover{
+  cursor: pointer;
 }
 
 .logOut {
@@ -13,6 +17,19 @@ html,body{
 
 .logOut:hover {
   background-color: RoyalBlue;
+}
+
+.addingFormOpener{
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.addingFormOpener:hover{
+  color: #3a7999;
 }
 
 .addNewExcercise{
@@ -100,8 +117,8 @@ html,body{
   border-radius: 10px;
   overflow: hidden;
   text-align: center;
-  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
-  background: #2ecc71;
+  box-shadow: rgba(33, 33, 33, 0.4) 0px 0px 15px;
+  background: #a29bfe;
   margin-bottom: 5px;
 }
 
@@ -112,8 +129,8 @@ html,body{
   border-radius: 10px;
   overflow: hidden;
   text-align: center;
-  box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
-  background: #2ecc71;
+  box-shadow: rgba(33, 33, 33, 0.4) 0px 0px 15px;
+  background: #a29bfe;
 }
 
 .dropdown {
@@ -166,10 +183,8 @@ table{
   border-collapse: collapse;
   margin-right: auto;
   margin-left: auto;
-}
-
-table.allExcercises {
   margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 th {

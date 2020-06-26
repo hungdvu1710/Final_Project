@@ -1,6 +1,5 @@
 html,body{
-  background: rgb(36,36,0);
-  background: linear-gradient(to right, rgba(36,36,0,1) , rgba(177,56,158,1) , rgba(0,212,255,1) );
+  background-image: url(excercise_selector_background.jpg);
 }
 
 .logOutWrapper{
@@ -38,7 +37,7 @@ html,body{
   text-align: center;
   box-shadow: rgba(33, 33, 33, 0.2) 0px 0px 11px;
   background: #2ecc71;
-  margin-bottom: 5px;
+  margin: 20px;
 }
 
 .recordWrapper{
@@ -89,6 +88,8 @@ h3{
   font-family: 'MuseoModerno', cursive;
   margin-top:10px;
   margin-bottom: 15px;
+  text-decoration: underline;
+  text-underline-position: under;
 }
 
 .excerciseChoice{
@@ -100,6 +101,7 @@ h3{
   border: 4px solid #494949 !important;
   display: inline-block;
   transition: all 0.4s ease 0s;
+  border-radius: 5px;
 }
 
 .excerciseChoice:hover{
