@@ -57,5 +57,4 @@ User Lists:
 - rightanswer
 - question
 # TODO:
-- Update user data in admin page after deleting an excercise
 - Disable test with no question and question with no answer in test page
