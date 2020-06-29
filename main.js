@@ -3,11 +3,8 @@ const {
   app,
   BrowserWindow,
   ipcMain,
-  dialog,
-  Menu,
-  Tray,
-  clipboard } = require('electron')
-const fetch = require('electron-fetch').default
+  dialog
+} = require('electron')
 const path = require('path')
 const dataStore = require('nedb')
 
@@ -30,20 +27,17 @@ function createLogInWindow () {
   })
 
   loginWindow.loadFile('.\\login_page\\index.html')
-  loginWindow.webContents.openDevTools()
 }
 
 function openExcerciseSelectorWindow(username){
   const excerciseSelectWin = new BrowserWindow({
-    width: 500,
-    height: 400,
+    fullscreen: true,
     webPreferences: {
       nodeIntegration: true
     }
   })
 
   excerciseSelectWin.loadFile('.\\excercise_selector\\index.html')
-  excerciseSelectWin.webContents.openDevTools()
   excerciseSelectWin.webContents.on('did-finish-load',()=>{
     excerciseSelectWin.webContents.send('user-logged-in',username)
   })
@@ -53,17 +47,18 @@ let adminWin
 
 function openAdminWindow(){
   adminWin = new BrowserWindow({
+    // fullscreen: true,
     webPreferences: {
       nodeIntegration: true
     }
   })
 
   adminWin.loadFile('.\\admin\\index.html')
-  adminWin.webContents.openDevTools()
 }
 
 function openExcerciseEditorWindow(excercise){
   const excerciseEditor = new BrowserWindow({
+    fullscreen: true,
     webPreferences: {
       nodeIntegration: true
     },
@@ -81,20 +76,18 @@ function openExcerciseEditorWindow(excercise){
     })
   })
 
-  excerciseEditor.webContents.openDevTools()
 }
 
 function openTestPageWindow(testInfo){ //testInfo includes the excercise and the username of the test taker
   const testPageWin = new BrowserWindow({
-    width: 500,
-    height: 400,
+    fullscreen: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
   })
 
   testPageWin.loadFile('.\\test_page\\index.html')
-  testPageWin.webContents.openDevTools()
   testPageWin.webContents.on('did-finish-load',()=>{
     testPageWin.webContents.send('excercise-to-load',testInfo)
   })
@@ -176,13 +169,15 @@ ipcMain.on('get-all-excercises-client',(event,args)=>{
         allExcercises.push({name,excerciseLength,givenTime})
       }
 
-    });
+    })
+
     event.sender.send('all-excercises-response',allExcercises)
   })
 })
 
 ipcMain.on('req-single-excercise',(event,args)=>{
   const {username,excercise} = args
+  
   excerciseDb.findOne({name: excercise}, (err,doc)=>{
     openTestPageWindow({username,excercise:doc})
     event.sender.send('close-excercise-selector-page')
@@ -205,19 +200,10 @@ ipcMain.on('get-user-record',(event,args)=>{
 
 //#region handle test_page window
 function arraysEqual(_arr1, _arr2) {
+  if (!Array.isArray(_arr1)) return false
+  if (!Array.isArray(_arr2)) return false
 
-  if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
-    return false;
-
-  const arr1 = _arr1.concat().sort();
-  const arr2 = _arr2.concat().sort();
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i])
-      return false;
-  }
-
-  return true;
+  return _arr1.sort().join(',') === _arr2.sort().join(',')
 }
 
 ipcMain.on('user-responses',(event,args)=>{
@@ -293,7 +279,6 @@ ipcMain.on('admin-log-out-req',(event,args)=>{
 })
 
 ipcMain.on('get-all-users',(event,args)=>{
-  let allUsers = []
   credentialDb.find({}, (err, docs) => {
     event.sender.send('all-users-response',docs)
   })

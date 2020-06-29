@@ -62,11 +62,14 @@ function addSingleChoiceQuestion(question,answers,rightanswer,_questionId,type,a
 
   const answerRow = questionTable.insertRow(-1)
   answerRow.setAttribute("class","radio")
-  answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
   answerRow.setAttribute("id",_questionId)
+
+  const answerContainer = document.createElement("div")
+  answerContainer.setAttribute("class","answerContainer")
+  answerContainer.appendChild(addAccessibilityController(_questionId,accessibility))
   
   answers.forEach(answer =>{
-    addSingleAnswer(answer,answerRow,"radio",rightanswer,_questionId)
+    addSingleAnswer(answer,answerContainer,"radio",rightanswer,_questionId)
   })
 
   const addAnswerBtn = document.createElement("button")
@@ -74,7 +77,8 @@ function addSingleChoiceQuestion(question,answers,rightanswer,_questionId,type,a
   addAnswerBtn.innerText = "Add"
   addAnswerBtn.addEventListener("click",addAnswer)
 
-  answerRow.appendChild(addAnswerBtn)
+  answerContainer.appendChild(addAnswerBtn)
+  answerRow.appendChild(answerContainer)
 }
 
 function addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,accessibility){
@@ -91,10 +95,13 @@ function addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,ac
   const answerRow = questionTable.insertRow(-1)
   answerRow.setAttribute("class","checkbox")
   answerRow.setAttribute("id",_questionId)
-  answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
+
+  const answerContainer = document.createElement("div")
+  answerContainer.setAttribute("class","answerContainer")
+  answerContainer.appendChild(addAccessibilityController(_questionId,accessibility))
 
   answers.forEach(answer =>{
-    addSingleAnswer(answer,answerRow,"checkbox",rightanswer,_questionId)
+    addSingleAnswer(answer,answerContainer,"checkbox",rightanswer,_questionId)
   })
 
   const addAnswerBtn = document.createElement("button")
@@ -102,7 +109,8 @@ function addMultiChoiceQuestion(question,answers,rightanswer,_questionId,type,ac
   addAnswerBtn.innerText = "Add"
   addAnswerBtn.addEventListener("click",addAnswer)
 
-  answerRow.appendChild(addAnswerBtn)
+  answerContainer.appendChild(addAnswerBtn)
+  answerRow.appendChild(answerContainer)
 }
 
 function addTFQuestion(question,answers,rightanswer,_questionId,type,accessibility){
@@ -120,16 +128,20 @@ function addTFQuestion(question,answers,rightanswer,_questionId,type,accessibili
 
   const answerRow = questionTable.insertRow(-1)
   answerRow.setAttribute("class","radio")
-  answerRow.appendChild(addAccessibilityController(_questionId,accessibility))
   answerRow.setAttribute("id",_questionId)
 
+  const answerContainer = document.createElement("div")
+  answerContainer.setAttribute("class","answerContainer")
+  answerContainer.appendChild(addAccessibilityController(_questionId,accessibility))
+
   answers.forEach(answer =>{
-    addTFAnswer(answer,answerRow,rightanswer,_questionId)
+    addTFAnswer(answer,answerContainer,rightanswer,_questionId)
   })
 
+  answerRow.appendChild(answerContainer)
 }
 
-function addTFAnswer(answer,answerRow,rightanswer,_questionId){
+function addTFAnswer(answer,answerContainer,rightanswer,_questionId){
   const answerWrapper = document.createElement("div")
   answerWrapper.setAttribute("class",`${_questionId}answerWrapper`)
 
@@ -152,10 +164,10 @@ function addTFAnswer(answer,answerRow,rightanswer,_questionId){
   answerWrapper.appendChild(choice)
   answerWrapper.appendChild(answerInput)
 
-  answerRow.appendChild(answerWrapper)
+  answerContainer.appendChild(answerWrapper)
 }
 
-function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
+function addSingleAnswer(answer,answerContainer,type,rightanswer,_questionId){
   const answerWrapper = document.createElement("div")
   answerWrapper.setAttribute("class",`${_questionId}answerWrapper`)
 
@@ -184,7 +196,7 @@ function addSingleAnswer(answer,answerRow,type,rightanswer,_questionId){
   answerWrapper.appendChild(answerInput)
   answerWrapper.appendChild(deleteAnswerBtn)
 
-  answerRow.appendChild(answerWrapper)
+  answerContainer.appendChild(answerWrapper)
 }
 
 function addAccessibilityController(_questionId,accessibility){
@@ -220,8 +232,8 @@ function deleteAnswer(){
 }
 
 function addAnswer(){
-  const questionId = this.parentNode.id
-  const type = this.parentNode.className
+  const questionId = this.parentNode.parentNode.id
+  const type = this.parentNode.parentNode.className
 
   const answerWrapper = document.createElement("div")
   answerWrapper.setAttribute("class",`${questionId}answerWrapper`)
@@ -251,29 +263,28 @@ function updateChoiceValue(){
   this.parentNode.firstChild.value = this.value
 }
 
-function handleSubmit(){
+async function handleSubmit(){
   const name = document.querySelector(".title").innerText
   const timeAllowed = document.querySelector(".timeAllowed").value
-
+  const {questions} = await excerciseLoader
   Promise.all([
-    getQuestionContentChanges(),
-    getQuestionAccessibilityChanges(),
-    getAllRightAnswers(),
-    getAnswerChanges(),
-    getQuestionType()
-  ]).then(values => {
+    getQuestionContentChanges(questions),
+    getQuestionAccessibilityChanges(questions),
+    getAllRightAnswers(questions),
+    getAnswerChanges(questions),
+    getQuestionType(questions)
+  ]).then(questionProperties => {
     
     const questions = []
 
-    values.forEach(value => {
-
+    questionProperties.forEach(questionProperty => {
       if(!questions.length){
 
-        value.forEach(element=>{
+        questionProperty.forEach(element=>{
           questions.push(element)
         })
       } else{
-        value.forEach(element=>{
+        questionProperty.forEach(element=>{
 
           questions.forEach(question=>{
 
@@ -296,8 +307,7 @@ function handleSubmit(){
   
 }
 
-async function getAllRightAnswers(){
-  const {questions} = await excerciseLoader
+function getAllRightAnswers(questions){
   const allCurrentQuestions = newQuestionSet.concat(questions)
   let rightanswerSet = []
 
@@ -315,8 +325,7 @@ async function getAllRightAnswers(){
   return rightanswerSet
 }
 
-async function getQuestionContentChanges(){
-  const {questions} = await excerciseLoader
+function getQuestionContentChanges(questions){
   const allCurrentQuestions = newQuestionSet.concat(questions)
   let newQuestionContent = []
 
@@ -330,8 +339,7 @@ async function getQuestionContentChanges(){
   return newQuestionContent
 }
 
-async function getAnswerChanges(){
-  const {questions} = await excerciseLoader
+function getAnswerChanges(questions){
   const allCurrentQuestions = newQuestionSet.concat(questions)
   let newAnswerSet = []
 
@@ -349,8 +357,7 @@ async function getAnswerChanges(){
   return newAnswerSet
 }
 
-async function getQuestionType(){
-  const {questions} = await excerciseLoader
+function getQuestionType(questions){
   const allCurrentQuestions = newQuestionSet.concat(questions)
   let TypeSet = []
 
@@ -364,8 +371,7 @@ async function getQuestionType(){
   return TypeSet
 }
 
-async function getQuestionAccessibilityChanges(){
-  const {questions} = await excerciseLoader
+function getQuestionAccessibilityChanges(questions){
   const allCurrentQuestions = newQuestionSet.concat(questions)
   let newAccessibilitySet = []
 
@@ -395,8 +401,11 @@ function addQuestion(){
   questionRow.setAttribute("class","questionRow")
 
   const answerRow = questionTable.insertRow(-1)
-  answerRow.appendChild(addAccessibilityController(_questionId,"disabled"))
   answerRow.setAttribute("id",_questionId)
+
+  const answerContainer = document.createElement("div")
+  answerContainer.setAttribute("class","answerContainer")
+  answerContainer.appendChild(addAccessibilityController(_questionId,"disabled"))
 
   if(type == "single-choice"){
     answerRow.setAttribute("class","radio")
@@ -406,7 +415,8 @@ function addQuestion(){
     addAnswerBtn.innerText = "Add"
     addAnswerBtn.addEventListener("click",addAnswer)
 
-    answerRow.appendChild(addAnswerBtn)
+    answerContainer.appendChild(addAnswerBtn)
+    answerRow.appendChild(answerContainer)
 
     newQuestion.answers = []
   } else if(type == "multi-choice"){
@@ -417,7 +427,8 @@ function addQuestion(){
     addAnswerBtn.innerText = "Add"
     addAnswerBtn.addEventListener("click",addAnswer)
 
-    answerRow.appendChild(addAnswerBtn)
+    answerContainer.appendChild(addAnswerBtn)
+    answerRow.appendChild(answerContainer)
 
     newQuestion.answers = []
   } else{
@@ -460,8 +471,10 @@ function addQuestion(){
     secondAnswerWrapper.appendChild(secondChoice)
     secondAnswerWrapper.appendChild(secondChoiceContent)
 
-    answerRow.appendChild(firstAnswerWrapper)
-    answerRow.appendChild(secondAnswerWrapper)
+    answerContainer.appendChild(firstAnswerWrapper)
+    answerContainer.appendChild(secondAnswerWrapper)
+
+    answerRow.appendChild(answerContainer)
 
     newQuestion.answers = ["T","F"]
   }
