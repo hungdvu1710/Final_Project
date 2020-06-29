@@ -30,6 +30,18 @@ const excercisesLoader = new Promise((resolve,reject)=>{
   })
 })
 
+const clock = document.querySelector(".clock")
+
+const sticky = clock.offsetTop
+
+window.addEventListener("scroll",()=>{
+  if (window.pageYOffset > sticky) {
+    clock.classList.add("sticky")
+  } else {
+    clock.classList.remove("sticky")
+  }
+})
+
 function addSingleChoiceQuestion(question,answers,accessibility,rightanswer,_questionId){
   if(accessibility == "disabled"){
     return
@@ -92,6 +104,7 @@ function addTFQuestion(question,answers,accessibility,rightanswer,_questionId){
 
 function addSingleAnswer(answer,question,answerRow,type,_questionId){
   const answerWrapper = document.createElement("div")
+  answerWrapper.setAttribute("class","answerWrapper")
 
   const choice = document.createElement('input')
   choice.setAttribute("type",type)

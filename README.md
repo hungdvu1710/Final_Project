@@ -25,19 +25,6 @@ Database:
   - NeDB (Master Race)
 
 # DB structure suggestions:
-Excercises Bank: (accessed only by admin)
-  - Every time admin creates new excercises, append the excercises name to the excercises.db, then update its content
-  - Suggested excercise db structure example: {question: "#1", answer: ["a","b","c","d"], rightanswer: "b"}
-
-  {
-    {
-      name: "#1",
-      created_at: ""
-      questions: [{number: "#1", answer: ["a","b","c","d"], rightanswer: "b"},{number: "#2", answer: ["a","b","c","d"], rightanswer: "c"}]
-    },
-    {},
-    {}
-  }
 User Lists:
   - Update user record whenever he/she finishes an excercise
   - Suggested single user db structure example: 
@@ -47,8 +34,6 @@ User Lists:
     record:[{excercise: "sample", score: "7/10"},{excercise: "sample2", score: "7/10"}]
   }
 
-# Suggestions on score calculation:
-- Get data from test_page then compare it with right answers from db
 # Single question structure:
 - type
 - _questionId
@@ -56,5 +41,3 @@ User Lists:
 - answers
 - rightanswer
 - question
-# TODO:
-- Disable test with no question and question with no answer in test page
