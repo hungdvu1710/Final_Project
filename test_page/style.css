@@ -2,30 +2,43 @@ html,
 body {
 	height: 100%;
 }
+
 .timer{
   font-family: 'Roboto Mono', monospace;
+  font-size: 17px;
+  color: #d63031;
 }
+
+.clock{
+  padding-left: 10px;
+  padding-bottom: 5px;
+  background: #dfe6e9;
+}
+
+.sticky{
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 body {
 	margin: 0;
 	background: linear-gradient(to right, #81ecec, #5f2c82);
 	font-family: sans-serif;
 	font-weight: 100;
 }
+
 table {
   width: 100%;
 	border-collapse: collapse;
 	overflow: hidden;
 }
 
-th,
-td {
+th{
 	padding: 15px;
 	background-color: rgba(255,255,255,0.2);
-	color: #2d3436;
-}
-
-th {
-	text-align: left;
+  color: #2d3436;
+  text-align: left;
 }
 
 h4{
@@ -69,4 +82,8 @@ input:checked ~ label{
   -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
   box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
   transition: all 0.4s ease 0s;
+}
+
+.answerWrapper{
+  margin: 5px
 }
