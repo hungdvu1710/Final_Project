@@ -47,7 +47,6 @@ let adminWin
 
 function openAdminWindow(){
   adminWin = new BrowserWindow({
-    // fullscreen: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -239,17 +238,16 @@ ipcMain.on('user-responses',(event,args)=>{
       if(oldResult[0]){
         
 
-        credentialDb.update({username},{$pull: {record: oldResult[0]}},{},(e,numReplaced)=>{
-          console.log(numReplaced)
+        credentialDb.update({username},{$pull: {record: oldResult[0]}},{},()=>{
           oldResult[0].score = score
 
-          credentialDb.update({username},{$push: {record: oldResult[0]}},{},(e,numReplaced)=>{
-            console.log(numReplaced)
+          credentialDb.update({username},{$push: {record: oldResult[0]}},{},(_,numReplaced)=>{
+            console.log(`Replaced: ${numReplaced}`)
           })
         })
       } else{
         credentialDb.update({username},{$push: {record: {excercise: name, score}}},{},(e,numReplaced)=>{
-          console.log(numReplaced)
+          console.log(`Replaced: ${numReplaced}`)
         })
       }
       
@@ -286,7 +284,6 @@ ipcMain.on('get-all-users',(event,args)=>{
 
 ipcMain.on('open-editor',(event,args)=>{
   excerciseDb.findOne(args,(e,doc)=>{
-    console.log(doc)
     openExcerciseEditorWindow(doc)
   })
   
@@ -323,29 +320,25 @@ ipcMain.on('delete-test',(event,args)=>{
         return
       }
 
-      console.log(record)
       const oldResult = record.filter(element=>element.excercise === args)
       
       if(oldResult[0]){
-        
-        console.log(oldResult)
 
         credentialDb.update({username},{$pull: {record: oldResult[0]}},{},(e,numReplaced)=>{
-          console.log(numReplaced)
+          console.log(`Replaced: ${numReplaced}`)
         })
       } 
     })
   })
 
   excerciseDb.remove({name:args},{},(err,numRemoved)=>{
-    console.log(numRemoved)
+    console.log(`Removed: ${numRemoved}`)
   })
 })
 //#endregion
 
 //#region handle single excercise editor
 ipcMain.on('update-excercise',(event,args)=>{
-  // console.log(args)
   const {name} = args
 
   excerciseDb.remove({name},{},(err,numRemoved)=>{

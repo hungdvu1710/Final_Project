@@ -33,7 +33,6 @@ ipcRenderer.on('all-users-response',(event,args)=>{
 })
 
 ipcRenderer.on('update-excercise',(event,args)=>{
-  console.log(args)
   const {name} = args
   if(document.getElementsByClassName(name).length === 0){
     const newRow = excerTable.insertRow(-1)
@@ -56,7 +55,6 @@ function appendExcerciseRow(excercises){
 }
 
 function appendUserRow(users){
-  console.log(users)
 
   users.forEach(user=>{
     const {username,record} = user

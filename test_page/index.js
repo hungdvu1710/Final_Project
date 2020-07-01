@@ -2,6 +2,8 @@ const { ipcRenderer,remote } = require("electron")
 
 const questionTable = document.querySelector(".all-questions")
 const submitBtn = document.querySelector(".submit")
+const clock = document.querySelector(".clock")
+const sticky = clock.offsetTop
 submitBtn.addEventListener("click",getUserResponse)
 const MINUTE_TO_MS = 1000*60
 
@@ -29,10 +31,6 @@ const excercisesLoader = new Promise((resolve,reject)=>{
     resolve({username,questions,name})
   })
 })
-
-const clock = document.querySelector(".clock")
-
-const sticky = clock.offsetTop
 
 window.addEventListener("scroll",()=>{
   if (window.pageYOffset > sticky) {
